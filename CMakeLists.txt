@@ -7,7 +7,6 @@ include_directories(Project_DA)
 
 add_executable(ProjectDA
         Project_DA/City.h
-        Project_DA/Graph.cpp
         Project_DA/Graph.h
         Project_DA/main.cpp
         Project_DA/Rede.cpp

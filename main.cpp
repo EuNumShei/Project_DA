@@ -44,9 +44,9 @@ void print_incorreto(){
 * Time complexity: O(1)
 */
 void apresentacao_do_menu_inicial(){
-    vector<string> vetor = {"consultar_agua_maxima_cidade   Para consultar o maximo de água possível de ser distribuida a uma cidade",
-                            "consultar_viabilidade_rede     Para verificar se a rede consegue fornecer a agua necessaria a todas as cidades",
-                            "balancear_rede                 ",
+    vector<string> vetor = {"consultar_n_globais            Para consultar o numero de cidades, reservatorios e estacoes",
+                            "consultar_edges                Para verificar a existencia ou nao de uma edge",
+                            "consultar_max_flow_cidade      Para verificar o max flow possivel de uma cidade",
                             "sair                           Para terminar programa"};
 
     cout << "---------Menu inicial---------" << endl;
@@ -539,6 +539,29 @@ void menu_inicial(Rede & rede) {
             rede.numero_de_cidades();
             rede.numero_de_reservatorios();
             rede.numero_de_estacoes();
+            apresentacao_do_menu_inicial();
+        } else if (comando == "consultar_edges"){
+            cout << "Qual o codigo da source: ";
+            string source, dest;
+            cin >> source;
+            cout << "Qual o codigo do dest: ";
+            cin >> dest;
+            if(rede.verificar_edge(source, dest)){
+                cout << "Existe uma edge entre os 2 vertices" << endl;
+            }else{
+                cout << "Nao existe uma edge entre os 2 vertices" << endl;
+            }
+            apresentacao_do_menu_inicial();
+        } else if (comando == "consultar_max_flow_cidade"){
+            cout << "Qual o codigo da cidade: ";
+            string cidade;
+            cin >> cidade;
+            rede.initialize_flow();
+            for(auto reservoir : rede.getReservoirs()){
+                rede.edmonds_karp(reservoir.first, cidade);
+            }
+            cout << "A cidade " << cidade << " tem um max flow de " << rede.max_flow(cidade) << endl;
+            rede.initialize_flow();
             apresentacao_do_menu_inicial();
         } else if (comando == "sair") {
             // guardar_dados();

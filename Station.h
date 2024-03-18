@@ -10,15 +10,13 @@ using namespace std;
 
 class Station {
 public:
-    Station(int id, string code, char type){
+    Station(int id, string code){
         this->id = id;
         this->code = code;
-        this->type = type;
     }
 
-    string get_code() {return code;}
-    int get_id() {return id;}
-    char get_type() {return type;}
+    string get_code() const {return code;}
+    int get_id() const {return id;}
 
     bool operator==(const Station& outro) const{
         return id == outro.id;
@@ -26,7 +24,6 @@ public:
 protected:
     int id;
     string code;
-    char type;
 };
 
 

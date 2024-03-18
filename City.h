@@ -10,11 +10,7 @@ using namespace std;
 
 class City : public Station{
 public:
-    City(string name, int id, string code, double demand, int population, char type) : Station(id, code, type = 'C'){
-        this->name = name;
-        this->demand = demand;
-        this->population = population;
-    }
+    City(string name, int id, string code, double demand, int population) : Station(id, code), name(name), demand(demand), population(population) {}
 
     string get_name() {return name;}
     double get_demand() {return demand;}

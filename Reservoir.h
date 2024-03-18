@@ -11,11 +11,7 @@ using namespace std;
 
 class Reservoir : public Station{
 public:
-    Reservoir(string name, string municipality, int id, string code, int max_delivery, char type) : Station(id, code, type = 'R'){
-        this->name = name;
-        this->municipality = municipality;
-        this->max_delivery = max_delivery;
-    }
+    Reservoir(string name, string municipality, int id, string code, int max_delivery) : Station(id, code), name(name), municipality(municipality), max_delivery(max_delivery){}
 
     string get_name() {return name;}
     string get_municipality() {return municipality;}

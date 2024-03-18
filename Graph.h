@@ -113,23 +113,21 @@ public:
     * Auxiliary function to find a vertex with a given the content.
     */
     Vertex<T> *findVertex(const T &station) const;
-    Vertex<Station> *findVertexwithCode(const string &in) const;
-    Vertex<Station> *findVertexWithID(const int &in) const;
     /*
      *  Adds a vertex with a given content or info (in) to a graph (this).
      *  Returns true if successful, and false if a vertex with that content already exists.
      */
-    bool addVertex(const T &station);
-    bool removeVertex(const T &station);
+    bool addVertex(const T &in);
+    bool removeVertex(const T &in);
 
     /*
      * Adds an edge to a graph (this), given the contents of the source and
      * destination vertices and the edge weight (w).
      * Returns true if successful, and false if the source or destination vertex does not exist.
      */
-    bool addEdge(const string &sourc, const string &dest, double w);
+    bool addEdge(const T &sourc, const T &dest, double w);
     bool removeEdge(const T &source, const T &dest);
-    bool addBidirectionalEdge(const string &sourc, const string &dest, double w);
+    bool addBidirectionalEdge(const T &sourc, const T &dest, double w);
 
     int getNumVertex() const;
     std::vector<Vertex<T> *> getVertexSet() const;
@@ -406,8 +404,8 @@ bool Graph<T>::addVertex(const T &in) {
  */
 template <class T>
 bool Graph<T>::removeVertex(const T &in) {
-    for (auto it = vertexSet.begin(); it != vertexSet.end(); it++) {
-        if ((*it)->getInfo() == in) {
+    auto it = std::find(vertexSet.begin(), vertexSet.end(), in);
+        if (it != vertexSet.end()) {
             auto v = *it;
             v->removeOutgoingEdges();
             for (auto u : vertexSet) {
@@ -417,7 +415,6 @@ bool Graph<T>::removeVertex(const T &in) {
             delete v;
             return true;
         }
-    }
     return false;
 }
 
@@ -427,9 +424,9 @@ bool Graph<T>::removeVertex(const T &in) {
  * Returns true if successful, and false if the source or destination vertex does not exist.
  */
 template <class T>
-bool Graph<T>::addEdge(const string &sourc, const string &dest, double w) {
-    auto v1 = findVertexwithCode(sourc);
-    auto v2 = findVertexwithCode(dest);
+bool Graph<T>::addEdge(const T &sourc, const T &dest, double w) {
+    auto v1 = findVertex(sourc);
+    auto v2 = findVertex(dest);
     if (v1 == nullptr || v2 == nullptr)
         return false;
     v1->addEdge(v2, w);
@@ -451,9 +448,9 @@ bool Graph<T>::removeEdge(const T &sourc, const T &dest) {
 }
 
 template <class T>
-bool Graph<T>::addBidirectionalEdge(const string &sourc, const string &dest, double w) {
-    auto v1 = findVertexwithCode(sourc);
-    auto v2 = findVertexwithCode(dest);
+bool Graph<T>::addBidirectionalEdge(const T &sourc, const T &dest, double w) {
+    auto v1 = findVertex(sourc);
+    auto v2 = findVertex(dest);
     if (v1 == nullptr || v2 == nullptr)
         return false;
     auto e1 = v1->addEdge(v2, w);

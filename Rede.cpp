@@ -14,7 +14,7 @@
 using namespace std;
 
 void Rede::ler_ficheiro_cidades() {
-    ifstream in("../Project_DA/Cities.csv");
+    ifstream in("../Cities.csv");
     if (!in) {
         cerr << "Erro ao abrir o arquivo." << endl;
     } else {
@@ -62,7 +62,7 @@ void Rede::ler_ficheiro_cidades() {
  *  Time complexity: O(l*w), being l the number of lines and w the number of words
  */
 void Rede::ler_ficheiro_reservatorios() {
-    ifstream in("../Project_DA/Reservoir.csv");
+    ifstream in("../Reservoir.csv");
     if (!in) {
         cerr << "Erro ao abrir o arquivo." << endl;
     } else {
@@ -110,7 +110,7 @@ void Rede::ler_ficheiro_reservatorios() {
  *  Time complexity: O(l*w), being l the number of lines and w the number of words
  */
 void Rede::ler_ficheiro_estacoes() {
-    ifstream in("../Project_DA/Stations.csv");
+    ifstream in("../Stations.csv");
     if (!in) {
         cerr << "Erro ao abrir o arquivo." << endl;
     } else {
@@ -141,7 +141,7 @@ void Rede::ler_ficheiro_estacoes() {
 }
 
 void Rede::ler_ficheiro_pipes() {
-    ifstream in("../Project_DA/Pipes.csv");
+    ifstream in("../Pipes.csv");
     if (!in) {
         cerr << "Erro ao abrir o arquivo." << endl;
     } else {

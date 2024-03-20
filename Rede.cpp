@@ -333,12 +333,13 @@ double Rede::max_flow(const string& cidade) {
 }
 
 
-double Rede::average_flow_capacity(Graph<std::string> g) {
+double Rede::average_flow_capacity() {
     double soma = 0;
     double count = 0;
     double res;
     for (Vertex<string>* v : g.getVertexSet()) {;
         for(Edge<string>* e : v->getAdj()) {
+            //cout << e->getFlowCapacity() << endl;
             soma += e->getFlowCapacity();
             count++;
         }
@@ -347,7 +348,7 @@ double Rede::average_flow_capacity(Graph<std::string> g) {
     return res;
 }
 
-double Rede::variance_flow_capacity(Graph<std::string> g) {
+double Rede::variance_flow_capacity() {
     double count = 0;
     double soma = 0;
     double mod_desvio;
@@ -355,7 +356,7 @@ double Rede::variance_flow_capacity(Graph<std::string> g) {
     double variance;
     for (Vertex<string>* v : g.getVertexSet()) {;
         for(Edge<string>* e : v->getAdj()) {
-            desvio = average_flow_capacity(g) - e->getFlowCapacity();
+            desvio = average_flow_capacity() - e->getFlowCapacity();
             if (desvio < 0) {
                 mod_desvio = desvio * -1;
             } else if(desvio >= 0) {
@@ -369,7 +370,7 @@ double Rede::variance_flow_capacity(Graph<std::string> g) {
     return variance;
 }
 
-double Rede::maximum_flow_capacity(Graph<std::string> g) {
+double Rede::maximum_flow_capacity() {
     double max_fc = 0;
     for (Vertex<string>* v : g.getVertexSet()) {;
         for(Edge<string>* e : v->getAdj()) {

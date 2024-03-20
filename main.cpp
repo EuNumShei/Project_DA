@@ -661,5 +661,10 @@ int main(){
     Rede rede;
     bem_vindo();
     menu_inicial(rede);
+    /*rede.initialize_flow();
+    cout << rede.average_flow_capacity() << endl;
+    cout << rede.variance_flow_capacity() << endl;
+    cout << rede.maximum_flow_capacity() << endl;
+    */
     return 0;
 }

@@ -173,7 +173,7 @@ void Rede::ler_ficheiro_pipes() {
                 count++;
             }
 
-            if(!bidirecional) g.addEdge(partida, chegada, capacidade);
+            if(bidirecional) g.addEdge(partida, chegada, capacidade);
             else g.addBidirectionalEdge(partida, chegada, capacidade);
         }
     }
@@ -218,10 +218,17 @@ bool Rede::verificar_edge(const string& source, const string& dest) {
 void Rede::testAndVisit(std::queue< Vertex<string>*> &q, Edge<string> *e, Vertex<string> *w, double residual) {
 // Check if the vertex 'w' is not visited and there is residual capacity
     if (! w->isVisited() && residual > 0) {
-// Mark 'w' as visited, set the path through which it was reached, and enqueue it
-        w->setVisited(true);
-        w->setPath(e);
-        q.push(w);
+        if (w->getInfo()[0] == 'R') {
+            if(reservoirs.at(w->getInfo()).get_max_delivery() > 0){
+                w->setVisited(true);
+                w->setPath(e);
+                q.push(w);
+            }
+        }else {
+            w->setVisited(true);
+            w->setPath(e);
+            q.push(w);
+        }
     }
 }
 
@@ -261,6 +268,11 @@ double Rede::findMinResidualAlongPath(Vertex<string> *s, Vertex<string> *t) {
         if (e->getDest() == v) {
             f = std::min(f, e->getWeight() - e->getFlow());
             v = e->getOrig();
+            if(v->getInfo()[0] == 'R'){
+                double delivery = reservoirs.at(v->getInfo()).get_max_delivery();
+                f = std::min(f, delivery);
+                reservoirs.at(v->getInfo()).set_max_delivery(delivery - f);
+            }
         }
         else {
             f = std::min(f, e->getFlow());
@@ -288,10 +300,20 @@ void Rede::augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f) 
     }
 }
 
-void Rede::edmonds_karp(const string &source, const string &dest) {
-// Main function implementing the Edmonds-Karp algorithm
-// Find source and target vertices in the graph
-    Vertex<string>* s = g.findVertex(source);
+void Rede::edmonds_karp(const string &dest) {
+    initialize_flow();
+    Reservoir new_source = Reservoir("Source", "Cena", 0, "R_0", UINT16_MAX);
+    g.addVertex("R_0");
+    for(auto vertex : g.getVertexSet()){
+        if(vertex->getInfo()[0] == 'R' && vertex->getInfo() != "R_0"){
+            g.addEdge("R_0", vertex->getInfo(), UINT32_MAX);
+        }
+        if(vertex->getInfo()[0] == 'C'){
+            g.addEdge(vertex->getInfo(), "PS_0", UINT32_MAX);
+        }
+    }
+    reservoirs.insert({"R_0", new_source});
+    Vertex<string>* s = g.findVertex("R_0");
     Vertex<string>* t = g.findVertex(dest);
 // Validate source and target vertices
     if (s == nullptr || t == nullptr || s == t)
@@ -322,5 +344,6 @@ double Rede::max_flow(const string& cidade) {
             }
         }
     }
+    g.removeVertex("R_0");
     return res;
 }

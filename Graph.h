@@ -112,7 +112,7 @@ public:
     /*
     * Auxiliary function to find a vertex with a given the content.
     */
-    Vertex<T> *findVertex(const T &station) const;
+    Vertex<T> *findVertex(const T &in) const;
     /*
      *  Adds a vertex with a given content or info (in) to a graph (this).
      *  Returns true if successful, and false if a vertex with that content already exists.
@@ -404,8 +404,8 @@ bool Graph<T>::addVertex(const T &in) {
  */
 template <class T>
 bool Graph<T>::removeVertex(const T &in) {
-    auto it = std::find(vertexSet.begin(), vertexSet.end(), in);
-        if (it != vertexSet.end()) {
+    for (auto it = vertexSet.begin(); it != vertexSet.end(); it++) {
+        if ((*it)->getInfo() == in) {
             auto v = *it;
             v->removeOutgoingEdges();
             for (auto u : vertexSet) {
@@ -415,6 +415,7 @@ bool Graph<T>::removeVertex(const T &in) {
             delete v;
             return true;
         }
+    }
     return false;
 }
 

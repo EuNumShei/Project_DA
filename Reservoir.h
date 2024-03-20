@@ -16,6 +16,9 @@ public:
     string get_name() {return name;}
     string get_municipality() {return municipality;}
     int get_max_delivery() {return max_delivery;}
+    void set_max_delivery(double delivery) {
+        max_delivery = delivery;
+    }
 private:
     string name;
     string municipality;

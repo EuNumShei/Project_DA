@@ -556,10 +556,7 @@ void menu_inicial(Rede & rede) {
             cout << "Qual o codigo da cidade: ";
             string cidade;
             cin >> cidade;
-            rede.initialize_flow();
-            for(auto reservoir : rede.getReservoirs()){
-                rede.edmonds_karp(reservoir.first, cidade);
-            }
+            rede.edmonds_karp(cidade);
             cout << "A cidade " << cidade << " tem um max flow de " << rede.max_flow(cidade) << endl;
             rede.initialize_flow();
             apresentacao_do_menu_inicial();

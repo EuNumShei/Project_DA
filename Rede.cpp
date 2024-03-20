@@ -249,8 +249,31 @@ bool Rede::findAugmentingPath(Vertex<string> *s, Vertex<string> *t) {
             testAndVisit(q, e, e->getOrig(), e->getFlow());
         }
     }
-// Return true if a path to the target is found, false otherwise
+
+    //Printing the Path if it is found having the target as the last vertex
+    //with a lot of comments explaining the process
+    if(t->isVisited()){
+        cout << "Path found: ";
+        for (auto v = t; v != s; ) {
+            auto e = v->getPath();
+            cout << v->getInfo() << " <- ";
+            if (e->getDest() == v) { //if the edge is going to the vertex, we go to the origin
+                v = e->getOrig();
+            }
+            else { //if the edge is coming from the vertex, we go to the destination
+                v = e->getDest();
+            }
+        }
+        cout << s->getInfo() << endl;
+    }
+
+
+
+
+    // Return true if a path to the target is found, false otherwise
     return t->isVisited();
+
+
 }
 
 // Function to find the minimum residual capacity along the augmenting path

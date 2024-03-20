@@ -28,7 +28,7 @@ void bem_vindo(){
 void print_inicio(const vector<string>& vetor) {
     cout << endl <<"Aqui se encontram todos os comandos disponiveis:" << endl;
     for (const string &metodo: vetor) {
-        cout << "     * " << metodo << endl;
+        cout << "      " << metodo << endl;
     }
 }
 
@@ -596,7 +596,14 @@ void menu_inicial(Rede & rede) {
                 rede.numero_de_cidades();
                 rede.numero_de_reservatorios();
                 rede.numero_de_estacoes();
-                apresentacao_do_menu_inicial();
+
+                //show the results before showing the menu again
+                cout << "To go back to the menu, type anything and press enter: ";
+                cin >> comando;
+                if(cin.fail())
+                    apresentacao_do_menu_inicial();
+                else
+                    apresentacao_do_menu_inicial();
                 break;
             case 2:
                 cout << "Qual o codigo da source: ";
@@ -609,8 +616,16 @@ void menu_inicial(Rede & rede) {
                 }else{
                     cout << "Nao existe uma edge entre os 2 vertices" << endl;
                 }
-                apresentacao_do_menu_inicial();
+
+                //show the results before showing the menu again
+                cout << "To go back to the menu, type anything and press enter: ";
+                cin >> comando;
+                if(cin.fail())
+                    apresentacao_do_menu_inicial();
+                else
+                    apresentacao_do_menu_inicial();
                 break;
+
             case 3:
                 cout << "Qual o codigo da cidade: ";
                 cin >> cidade;
@@ -620,11 +635,18 @@ void menu_inicial(Rede & rede) {
                 }
                 cout << "A cidade " << cidade << " tem um max flow de " << rede.max_flow(cidade) << endl;
                 rede.initialize_flow();
-                apresentacao_do_menu_inicial();
+
+                //show the results before showing the menu again
+                cout << "To go back to the menu, type anything and press enter: ";
+                cin >> comando;
+                if(cin.fail())
+                    apresentacao_do_menu_inicial();
+                else
+                    apresentacao_do_menu_inicial();
                 break;
             case 4:
             // guardar_dados();
-                break;
+                return;
             default:
                 print_incorreto();
         }

@@ -10,6 +10,7 @@
 #include "City.h"
 #include "Reservoir.h"
 #include "Station.h"
+#include <math.h>
 
 using namespace std;
 
@@ -273,16 +274,21 @@ double Rede::findMinResidualAlongPath(Vertex<string> *s, Vertex<string> *t) {
 
 // Function to augment flow along the augmenting path with the given flow value
 void Rede::augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f) {
+    double f_c;
 // Traverse the augmenting path and update the flow values accordingly
     for (auto v = t; v != s; ) {
         auto e = v->getPath();
         double flow = e->getFlow();
         if (e->getDest() == v) {
             e->setFlow(flow + f);
+            f_c = e->getWeight() - (flow + f);
+            e->setFlowCapacity(f_c);
             v = e->getOrig();
         }
         else {
             e->setFlow(flow - f);
+            f_c = e->getWeight() - (flow - f);
+            e->setFlowCapacity(f_c);
             v = e->getDest();
         }
     }
@@ -308,6 +314,7 @@ void Rede::initialize_flow(){
     for (auto v : g.getVertexSet()) {
         for (auto e: v->getAdj()) {
             e->setFlow(0);
+            e->setFlowCapacity(e->getWeight());
         }
     }
 }
@@ -323,4 +330,53 @@ double Rede::max_flow(const string& cidade) {
         }
     }
     return res;
+}
+
+
+double Rede::average_flow_capacity(Graph<std::string> g) {
+    double soma = 0;
+    double count = 0;
+    double res;
+    for (Vertex<string>* v : g.getVertexSet()) {;
+        for(Edge<string>* e : v->getAdj()) {
+            soma += e->getFlowCapacity();
+            count++;
+        }
+    }
+    res = soma / count;
+    return res;
+}
+
+double Rede::variance_flow_capacity(Graph<std::string> g) {
+    double count = 0;
+    double soma = 0;
+    double mod_desvio;
+    double desvio;
+    double variance;
+    for (Vertex<string>* v : g.getVertexSet()) {;
+        for(Edge<string>* e : v->getAdj()) {
+            desvio = average_flow_capacity(g) - e->getFlowCapacity();
+            if (desvio < 0) {
+                mod_desvio = desvio * -1;
+            } else if(desvio >= 0) {
+                mod_desvio = desvio;
+            }
+            soma += mod_desvio;
+            count++;
+        }
+    }
+    variance = pow(soma / count, 2);
+    return variance;
+}
+
+double Rede::maximum_flow_capacity(Graph<std::string> g) {
+    double max_fc = 0;
+    for (Vertex<string>* v : g.getVertexSet()) {;
+        for(Edge<string>* e : v->getAdj()) {
+            if (max_fc < e->getFlowCapacity()) {
+                max_fc = e->getFlowCapacity();
+            }
+        }
+    }
+    return max_fc;
 }

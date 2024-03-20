@@ -78,10 +78,12 @@ public:
     Vertex<T> * getOrig() const;
     Edge<T> *getReverse() const;
     double getFlow() const;
+    double getFlowCapacity() const;
 
     void setSelected(bool selected);
     void setReverse(Edge<T> *reverse);
     void setFlow(double flow);
+    void setFlowCapacity(double flow_capacity);
     bool operator<(Edge<T> *second);
 protected:
     Vertex<T> * dest; // destination vertex
@@ -95,6 +97,7 @@ protected:
     Edge<T> *reverse = nullptr;
 
     double flow; // for flow-related problems
+    double flow_capacity;
 };
 
 template<class T>
@@ -338,6 +341,12 @@ double Edge<T>::getFlow() const {
 }
 
 template <class T>
+double Edge<T>::getFlowCapacity() const{
+    return flow_capacity;
+}
+
+
+template <class T>
 void Edge<T>::setSelected(bool selected) {
     this->selected = selected;
 }
@@ -350,6 +359,10 @@ void Edge<T>::setReverse(Edge<T> *reverse) {
 template <class T>
 void Edge<T>::setFlow(double flow) {
     this->flow = flow;
+}
+template <class T>
+void Edge<T>::setFlowCapacity(double flow_capacity) {
+    this->flow_capacity = flow_capacity;
 }
 
 /********************** Graph  ****************************/

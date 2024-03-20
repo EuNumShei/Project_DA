@@ -1,0 +1,12 @@
+# ninja log v5
+8	479	7326283225505728	build.ninja	2acdd8c0aadea3dd
+8	1538	7325584981309917	CMakeFiles/Project_DA.dir/main.cpp.obj	87b0ffbcb751fe1f
+1	1974	7325584985640490	CMakeFiles/Project_DA.dir/Rede.cpp.obj	ff757303888ac22
+1975	2536	7325584991216972	Project_DA.exe	2164028a6685c1a9
+3	336	7326283225505728	build.ninja	2acdd8c0aadea3dd
+8	1972	7326283458566857	CMakeFiles/Project_DA.dir/main.cpp.obj	87b0ffbcb751fe1f
+19	2870	7326283467517561	CMakeFiles/Project_DA.dir/Rede.cpp.obj	ff757303888ac22
+2871	3406	7326283472786814	Project_DA.exe	2164028a6685c1a9
+10	2888	7326370963139456	CMakeFiles/Project_DA.dir/main.cpp.obj	87b0ffbcb751fe1f
+29	3836	7326370972568281	CMakeFiles/Project_DA.dir/Rede.cpp.obj	ff757303888ac22
+3837	4695	7326370981104049	Project_DA.exe	2164028a6685c1a9

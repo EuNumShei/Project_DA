@@ -37,6 +37,9 @@ public:
     std::unordered_map<string, City> getCities() { return cities; }
     void initialize_flow();
     double max_flow(const string& cidade);
+    double average_flow_capacity(Graph<string> g);
+    double maximum_flow_capacity(Graph<string> g);
+    double variance_flow_capacity(Graph<string> g);
 
 private:
     Graph<string> g;

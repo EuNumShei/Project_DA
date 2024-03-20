@@ -44,10 +44,11 @@ void print_incorreto(){
 * Time complexity: O(1)
 */
 void apresentacao_do_menu_inicial(){
-    vector<string> vetor = {"consultar_n_globais            Para consultar o numero de cidades, reservatorios e estacoes",
-                            "consultar_edges                Para verificar a existencia ou nao de uma edge",
-                            "consultar_max_flow_cidade      Para verificar o max flow possivel de uma cidade",
-                            "sair                           Para terminar programa"};
+    vector<string> vetor = {"1. Consultar o numero de cidades, reservatorios e estacoes",
+                            "2. Verificar a existencia ou nao de uma edge",
+                            "3. Verificar o max flow possivel de uma cidade",
+                            "4. Terminar programa",
+                            "Escolha uma opção."};
 
     cout << "---------Menu inicial---------" << endl;
     print_inicio(vetor);
@@ -530,7 +531,7 @@ void menu_de_destinos_alcansaveis(Sistema & sistema){
  *
  * @param sistema que contem toda a informacao sobre aeroportos e viagens
  */
-void menu_inicial(Rede & rede) {
+/*void menu_inicial(Rede & rede) {
     apresentacao_do_menu_inicial();
     while (true) {
         string comando;
@@ -569,6 +570,65 @@ void menu_inicial(Rede & rede) {
         } else {
             print_incorreto();
         }
+    }
+}
+ */
+
+void menu_inicial(Rede & rede) {
+    apresentacao_do_menu_inicial();
+    while (true) {
+        int comando;
+        string cidade;
+        string source, dest;
+        cin >> comando;
+
+        //safeguarding if comando is not an integer
+        if(cin.fail()){
+            cin.clear();
+            cin.ignore(10000, '\n');
+            print_incorreto();
+            apresentacao_do_menu_inicial();
+            continue;
+        }
+
+        switch (comando) {
+            case 1:
+                rede.numero_de_cidades();
+                rede.numero_de_reservatorios();
+                rede.numero_de_estacoes();
+                apresentacao_do_menu_inicial();
+                break;
+            case 2:
+                cout << "Qual o codigo da source: ";
+
+                cin >> source;
+                cout << "Qual o codigo do dest: ";
+                cin >> dest;
+                if(rede.verificar_edge(source, dest)){
+                    cout << "Existe uma edge entre os 2 vertices" << endl;
+                }else{
+                    cout << "Nao existe uma edge entre os 2 vertices" << endl;
+                }
+                apresentacao_do_menu_inicial();
+                break;
+            case 3:
+                cout << "Qual o codigo da cidade: ";
+                cin >> cidade;
+                rede.initialize_flow();
+                for(auto reservoir : rede.getReservoirs()){
+                    rede.edmonds_karp(reservoir.first, cidade);
+                }
+                cout << "A cidade " << cidade << " tem um max flow de " << rede.max_flow(cidade) << endl;
+                rede.initialize_flow();
+                apresentacao_do_menu_inicial();
+                break;
+            case 4:
+            // guardar_dados();
+                break;
+            default:
+                print_incorreto();
+        }
+
     }
 }
 

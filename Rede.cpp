@@ -300,21 +300,26 @@ void Rede::augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f) 
     }
 }
 
-void Rede::edmonds_karp(const string &dest) {
+void Rede::edmonds_karp() {
     initialize_flow();
-    Reservoir new_source = Reservoir("Source", "Cena", 0, "R_0", UINT16_MAX);
-    g.addVertex("R_0");
+    unordered_map<string, Reservoir> copia = reservoirs;
+    unordered_map<string, Station> copia2 = stations;
+    Reservoir new_source = Reservoir("Source", "Cena", 0, "r_0", INF);
+    Station new_target = Station(0, "ps_0");
+    g.addVertex("r_0");
+    g.addVertex("ps_0");
     for(auto vertex : g.getVertexSet()){
-        if(vertex->getInfo()[0] == 'R' && vertex->getInfo() != "R_0"){
-            g.addEdge("R_0", vertex->getInfo(), UINT32_MAX);
+        if(vertex->getInfo()[0] == 'R'){
+            g.addEdge("r_0", vertex->getInfo(), INF);
         }
         if(vertex->getInfo()[0] == 'C'){
-            g.addEdge(vertex->getInfo(), "PS_0", UINT32_MAX);
+            g.addEdge(vertex->getInfo(), "ps_0", INF);
         }
     }
-    reservoirs.insert({"R_0", new_source});
-    Vertex<string>* s = g.findVertex("R_0");
-    Vertex<string>* t = g.findVertex(dest);
+    reservoirs.insert({"r_0", new_source});
+    stations.insert({"ps_0", new_target});
+    Vertex<string>* s = g.findVertex("r_0");
+    Vertex<string>* t = g.findVertex("ps_0");
 // Validate source and target vertices
     if (s == nullptr || t == nullptr || s == t)
         throw std::logic_error("Invalid source and/or target vertex");
@@ -324,6 +329,8 @@ void Rede::edmonds_karp(const string &dest) {
         double f = findMinResidualAlongPath(s, t);
         augmentFlowAlongPath(s, t, f);
     }
+    reservoirs = copia;
+    stations = copia2;
 }
 
 void Rede::initialize_flow(){
@@ -344,6 +351,7 @@ double Rede::max_flow(const string& cidade) {
             }
         }
     }
-    g.removeVertex("R_0");
+    g.removeVertex("r_0");
+    g.removeVertex("ps_0");
     return res;
 }

@@ -27,7 +27,7 @@ public:
     void numero_de_reservatorios();
     void numero_de_estacoes();
     bool verificar_edge(const string& source, const string& dest);
-    void edmonds_karp(const string& dest);
+    void edmonds_karp();
     void testAndVisit(std::queue< Vertex<string>*> &q, Edge<string> *e, Vertex<string> *w, double residual);
     bool findAugmentingPath(Vertex<string> *s, Vertex<string> *t);
     void augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f);

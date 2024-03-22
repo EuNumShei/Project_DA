@@ -331,6 +331,7 @@ void Rede::edmonds_karp() {
     }
     reservoirs = copia;
     stations = copia2;
+    escrever_ficheiro_flow();
 }
 
 void Rede::initialize_flow(){
@@ -341,17 +342,90 @@ void Rede::initialize_flow(){
     }
 }
 
-double Rede::max_flow(const string& cidade) {
+double Rede::max_flow(const std::string &cidade) {
     double res = 0;
     auto v1 = g.findVertex(cidade);
+    for(auto edge :v1->getIncoming()){
+        res += edge->getFlow();
+    }
+    return res;
+}
+
+void Rede::max_flow() {
+    double total = 0;
+    double temp = 0;
     for(auto vertex : g.getVertexSet()){
-        for(auto edge : vertex->getAdj()){
-            if(edge->getDest() == v1){
-                res += edge->getFlow();
+        if(vertex->getInfo()[0] == 'C') {
+            for (auto edge: vertex->getIncoming()) {
+                temp += edge->getFlow();
+            }
+            cout << "A cidade " << vertex->getInfo() << " tem um max flow de " << temp << endl;
+            total += temp;
+            temp = 0;
+        }
+    }
+    cout << "O max flow total e " << total << endl;
+    g.removeVertex("r_0");
+    g.removeVertex("ps_0");
+}
+
+void Rede::escrever_ficheiro_flow() {
+    ofstream outputFile("../Project_DA/flow.csv");
+
+    if (!outputFile.is_open()) {
+        cerr << "Error opening file!" << endl;
+    }
+    string cabecalho = "City_ID,City_Code,Max_Flow,Demand";
+
+    outputFile << cabecalho << endl;
+
+    for(auto v : g.getVertexSet()){
+        if(v->getInfo()[0] == 'C'){
+            outputFile << to_string(cities.at(v->getInfo()).get_id()) << "," << v->getInfo() << "," << to_string(max_flow(v->getInfo())) << "," << to_string(cities.at(v->getInfo()).get_demand()) << endl;
+        }
+    }
+
+    outputFile.close();
+}
+
+/** Funcao que le o ficheiro com as informacoes acerca dos voos existentes e coloca essa informacao
+ *  no grafo
+ *  Time complexity: O(l*w), being l the number of lines and w the number of words
+ */
+void Rede::dados_reservatorios() {
+    ifstream in("../Project_DA/flow.csv");
+    if (!in) {
+        cerr << "Erro ao abrir o arquivo." << endl;
+    } else {
+        string linha;
+        getline(in, linha);
+        while (getline(in, linha)) {
+            istringstream iss(linha);
+            string palavra;
+            int id;
+            string code;
+            int flow;
+            int demand;
+            int count = 0;
+            while (std::getline(iss, palavra, ',')) {
+                switch (count) {
+                    case 0:
+                        id = stoi(palavra);
+                        break;
+                    case 1:
+                        code = palavra;
+                        break;
+                    case 2:
+                        flow = stoi(palavra);
+                        break;
+                    default:
+                        demand = stoi(palavra);
+                }
+                count++;
+            }
+            if (demand > flow){
+                cout << "A cidade " << code << " tem um defice de " << demand - flow << endl;
             }
         }
     }
-    g.removeVertex("r_0");
-    g.removeVertex("ps_0");
-    return res;
 }

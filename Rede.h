@@ -14,9 +14,9 @@
 class Rede {
 public:
     Rede(){
+        ler_ficheiro_cidades();
         ler_ficheiro_estacoes();
         ler_ficheiro_reservatorios();
-        ler_ficheiro_cidades();
         ler_ficheiro_pipes();
     }
     void ler_ficheiro_cidades();
@@ -37,6 +37,9 @@ public:
     std::unordered_map<string, City> getCities() { return cities; }
     void initialize_flow();
     double max_flow(const string& cidade);
+    void max_flow();
+    void escrever_ficheiro_flow();
+    void dados_reservatorios();
 
 private:
     Graph<string> g;

@@ -82,6 +82,7 @@ public:
     void setSelected(bool selected);
     void setReverse(Edge<T> *reverse);
     void setFlow(double flow);
+    void setCapacity(double capacity);
     bool operator<(Edge<T> *second);
 protected:
     Vertex<T> * dest; // destination vertex
@@ -351,6 +352,13 @@ template <class T>
 void Edge<T>::setFlow(double flow) {
     this->flow = flow;
 }
+
+template <class T>
+void Edge<T>::setCapacity(double capacity) {
+    this->weight = capacity;
+}
+
+
 
 /********************** Graph  ****************************/
 

@@ -47,7 +47,8 @@ void apresentacao_do_menu_inicial(){
     vector<string> vetor = {"1. Consultar o numero de cidades, reservatorios e estacoes",
                             "2. Verificar a existencia ou nao de uma edge",
                             "3. Verificar o max flow possivel de uma cidade",
-                            "4. Terminar programa",
+                            "4. Verificar a distribuicao por cidade",
+                            "5. Terminar programa",
                             "Escolha uma opção."};
 
     cout << "---------Menu inicial---------" << endl;
@@ -630,11 +631,7 @@ void menu_inicial(Rede & rede) {
             case 3:
                 rede.initialize_flow();
                 rede.edmonds_karp();
-                for(auto cidade : rede.getCities()){
-                    cout << "A cidade " << cidade.first << " tem um max flow de " << rede.max_flow(cidade.first) << endl;
-                    total_flow += rede.max_flow(cidade.first);
-                }
-                cout << "O max flow total e " << total_flow << endl;
+                rede.max_flow();
                 rede.initialize_flow();
 
                 //show the results before showing the menu again
@@ -646,6 +643,8 @@ void menu_inicial(Rede & rede) {
                     apresentacao_do_menu_inicial();
                 break;
             case 4:
+                rede.dados_reservatorios();
+            case 5:
                 // guardar_dados();
                 return;
             default:

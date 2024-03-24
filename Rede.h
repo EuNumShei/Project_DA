@@ -18,6 +18,20 @@ public:
         ler_ficheiro_estacoes();
         ler_ficheiro_reservatorios();
         ler_ficheiro_pipes();
+        g.addVertex("R_0");
+        g.addVertex("PS_0");
+        Reservoir new_source = Reservoir("Source", "Cena", 0, "R_0", INF);
+        Station new_target = Station(0, "PS_0");
+        reservoirs.insert({"R_0", new_source});
+        stations.insert({"PS_0", new_target});
+        for(auto vertex : g.getVertexSet()){
+            if(vertex->getInfo()[0] == 'R'){
+                g.addEdge("R_0", vertex->getInfo(), reservoirs.at(vertex->getInfo()).get_max_delivery());
+            }
+            if(vertex->getInfo()[0] == 'C'){
+                g.addEdge(vertex->getInfo(), "PS_0", cities.at(vertex->getInfo()).get_demand());
+            }
+        }
     }
     void ler_ficheiro_cidades();
     void ler_ficheiro_pipes();
@@ -40,6 +54,7 @@ public:
     void max_flow();
     void escrever_ficheiro_flow();
     void dados_reservatorios();
+    void set_cost_edges();
 
 private:
     Graph<string> g;

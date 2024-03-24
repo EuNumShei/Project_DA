@@ -218,17 +218,9 @@ bool Rede::verificar_edge(const string& source, const string& dest) {
 void Rede::testAndVisit(std::queue< Vertex<string>*> &q, Edge<string> *e, Vertex<string> *w, double residual) {
 // Check if the vertex 'w' is not visited and there is residual capacity
     if (! w->isVisited() && residual > 0) {
-        if (w->getInfo()[0] == 'R') {
-            if(reservoirs.at(w->getInfo()).get_max_delivery() > 0){
-                w->setVisited(true);
-                w->setPath(e);
-                q.push(w);
-            }
-        }else {
-            w->setVisited(true);
-            w->setPath(e);
-            q.push(w);
-        }
+        w->setVisited(true);
+        w->setPath(e);
+        q.push(w);
     }
 }
 
@@ -268,11 +260,6 @@ double Rede::findMinResidualAlongPath(Vertex<string> *s, Vertex<string> *t) {
         if (e->getDest() == v) {
             f = std::min(f, e->getWeight() - e->getFlow());
             v = e->getOrig();
-            if(v->getInfo()[0] == 'R'){
-                double delivery = reservoirs.at(v->getInfo()).get_max_delivery();
-                f = std::min(f, delivery);
-                reservoirs.at(v->getInfo()).set_max_delivery(delivery - f);
-            }
         }
         else {
             f = std::min(f, e->getFlow());
@@ -301,25 +288,10 @@ void Rede::augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f) 
 }
 
 void Rede::edmonds_karp() {
-    initialize_flow();
     unordered_map<string, Reservoir> copia = reservoirs;
     unordered_map<string, Station> copia2 = stations;
-    Reservoir new_source = Reservoir("Source", "Cena", 0, "r_0", INF);
-    Station new_target = Station(0, "ps_0");
-    g.addVertex("r_0");
-    g.addVertex("ps_0");
-    for(auto vertex : g.getVertexSet()){
-        if(vertex->getInfo()[0] == 'R'){
-            g.addEdge("r_0", vertex->getInfo(), INF);
-        }
-        if(vertex->getInfo()[0] == 'C'){
-            g.addEdge(vertex->getInfo(), "ps_0", INF);
-        }
-    }
-    reservoirs.insert({"r_0", new_source});
-    stations.insert({"ps_0", new_target});
-    Vertex<string>* s = g.findVertex("r_0");
-    Vertex<string>* t = g.findVertex("ps_0");
+    Vertex<string>* s = g.findVertex("R_0");
+    Vertex<string>* t = g.findVertex("PS_0");
 // Validate source and target vertices
     if (s == nullptr || t == nullptr || s == t)
         throw std::logic_error("Invalid source and/or target vertex");
@@ -343,10 +315,10 @@ void Rede::initialize_flow(){
 }
 
 double Rede::max_flow(const std::string &cidade) {
-    double res = 0;
+    double res = -1;
     auto v1 = g.findVertex(cidade);
-    for(auto edge :v1->getIncoming()){
-        res += edge->getFlow();
+    if(v1 != nullptr) {
+        res = v1->getAdj()[0]->getFlow();
     }
     return res;
 }
@@ -356,17 +328,13 @@ void Rede::max_flow() {
     double temp = 0;
     for(auto vertex : g.getVertexSet()){
         if(vertex->getInfo()[0] == 'C') {
-            for (auto edge: vertex->getIncoming()) {
-                temp += edge->getFlow();
-            }
-            cout << "A cidade " << vertex->getInfo() << " tem um max flow de " << temp << endl;
+            temp = vertex->getAdj()[0]->getFlow();
+            cout << "A cidade " << vertex->getInfo() << " tem um max flow de " << temp << " m³/sec" << endl;
             total += temp;
             temp = 0;
         }
     }
-    cout << "O max flow total e " << total << endl;
-    g.removeVertex("r_0");
-    g.removeVertex("ps_0");
+    cout << "O max flow total e " << total << " m³/sec" << endl;
 }
 
 void Rede::escrever_ficheiro_flow() {
@@ -424,7 +392,7 @@ void Rede::dados_reservatorios() {
                 count++;
             }
             if (demand > flow){
-                cout << "A cidade " << code << " tem um defice de " << demand - flow << endl;
+                cout << "A cidade " << code << " tem um defice de " << demand - flow << " m³/sec" << endl;
             }
         }
     }

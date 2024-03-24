@@ -78,15 +78,18 @@ public:
     Vertex<T> * getOrig() const;
     Edge<T> *getReverse() const;
     double getFlow() const;
+    double getCost() const;
 
     void setSelected(bool selected);
     void setReverse(Edge<T> *reverse);
     void setFlow(double flow);
+    void setCost(double cost);
     void setCapacity(double capacity);
     bool operator<(Edge<T> *second);
 protected:
     Vertex<T> * dest; // destination vertex
     double weight; // edge weight, can also be used for capacity
+    double cost; // will be used in balancing the graph
 
     // auxiliary fields
     bool selected = false;
@@ -339,6 +342,11 @@ double Edge<T>::getFlow() const {
 }
 
 template <class T>
+double Edge<T>::getCost() const {
+    return cost;
+}
+
+template <class T>
 void Edge<T>::setSelected(bool selected) {
     this->selected = selected;
 }
@@ -354,11 +362,9 @@ void Edge<T>::setFlow(double flow) {
 }
 
 template <class T>
-void Edge<T>::setCapacity(double capacity) {
-    this->weight = capacity;
+void Edge<T>::setCost(double cost) {
+    this->cost = cost;
 }
-
-
 
 /********************** Graph  ****************************/
 

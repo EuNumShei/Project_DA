@@ -37,7 +37,7 @@ void print_inicio(const vector<string>& vetor) {
 * Time complexity: O(1)
 */
 void print_incorreto(){
-    cout << "Escrito incorretamente. Tente novamente." << endl ;
+    cout << "Escrito incorretamente. Tente novamente: " ;
 }
 
 /** Apresenta o menu inicial com os comandos existentes
@@ -48,7 +48,8 @@ void apresentacao_do_menu_inicial(){
                             "2. Verificar a existencia ou nao de uma edge",
                             "3. Verificar o max flow possivel de uma cidade",
                             "4. Verificar a distribuicao por cidade",
-                            "5. Terminar programa",
+                            "5. Balancear a rede de distribuicao",
+                            "6. Terminar programa",
                             "Escolha uma opção."};
 
     cout << "---------Menu inicial---------" << endl;
@@ -578,9 +579,9 @@ void menu_de_destinos_alcansaveis(Sistema & sistema){
 void menu_inicial(Rede & rede) {
     apresentacao_do_menu_inicial();
     while (true) {
-        double total_flow = 0;
         int comando;
         string cidade;
+        double max_flow;
         string source, dest;
         cin >> comando;
 
@@ -602,10 +603,6 @@ void menu_inicial(Rede & rede) {
                 //show the results before showing the menu again
                 cout << "To go back to the menu, type anything and press enter: ";
                 cin >> comando;
-                if(cin.fail())
-                    apresentacao_do_menu_inicial();
-                else
-                    apresentacao_do_menu_inicial();
                 break;
             case 2:
                 cout << "Qual o codigo da source: ";
@@ -622,29 +619,44 @@ void menu_inicial(Rede & rede) {
                 //show the results before showing the menu again
                 cout << "To go back to the menu, type anything and press enter: ";
                 cin >> comando;
-                if(cin.fail())
-                    apresentacao_do_menu_inicial();
-                else
-                    apresentacao_do_menu_inicial();
                 break;
 
             case 3:
                 rede.initialize_flow();
                 rede.edmonds_karp();
-                rede.max_flow();
-                rede.initialize_flow();
 
+                cout << "Qual o codigo da cidade (Caso pretender o max flow de todas as cidades, escreva a palavra todas): ";
+                while(true) {
+                    cin >> cidade;
+                    if (cidade == "todas") {
+                        rede.max_flow();
+                        break;
+                    } else {
+                        max_flow = rede.max_flow(cidade);
+                        if (max_flow == -1) {
+                            print_incorreto();
+                        }else{
+                            cout << "A cidade " << cidade << " tem um max flow de " << max_flow << " m³/sec" << endl;
+                            break;
+                        }
+                    }
+                }
                 //show the results before showing the menu again
                 cout << "To go back to the menu, type anything and press enter: ";
                 cin >> comando;
-                if(cin.fail())
-                    apresentacao_do_menu_inicial();
-                else
-                    apresentacao_do_menu_inicial();
                 break;
             case 4:
                 rede.dados_reservatorios();
+
+                cout << "To go back to the menu, type anything and press enter: ";
+                cin >> comando;
+                break;
             case 5:
+
+                cout << "To go back to the menu, type anything and press enter: ";
+                cin >> comando;
+                break;
+            case 6:
                 // guardar_dados();
                 return;
             default:

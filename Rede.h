@@ -40,6 +40,7 @@ public:
     double average_flow_capacity();
     double maximum_flow_capacity();
     double variance_flow_capacity();
+    void BalancedLoad();
 
 private:
     Graph<string> g;

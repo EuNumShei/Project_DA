@@ -304,14 +304,14 @@ void Rede::augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f) 
         double flow = e->getFlow();
         if (e->getDest() == v) {
             e->setFlow(flow + f);
-            f_c = e->getWeight() - (flow + f);
-            e->setFlowCapacity(f_c);
+            //f_c = e->getWeight() - (flow + f);
+            //e->setFlowCapacity(f_c);
             v = e->getOrig();
         }
         else {
             e->setFlow(flow - f);
-            f_c = e->getWeight() - (flow - f);
-            e->setFlowCapacity(f_c);
+            //f_c = e->getWeight() - (flow - f);
+            //e->setFlowCapacity(f_c);
             v = e->getDest();
         }
     }
@@ -403,4 +403,32 @@ double Rede::maximum_flow_capacity() {
         }
     }
     return max_fc;
+}
+
+void Rede::BalancedLoad() {
+    for (auto vertex : g.getVertexSet()) {
+        for (auto edge : vertex->getAdj()) {
+            edge->setFlowCapacity(edge->getWeight() - edge->getFlow());
+        }
+    }
+
+    // Redistribuir o fluxo para equilibrar as diferenças
+    for (auto vertex : g.getVertexSet()) {
+        for (auto edge : vertex->getAdj()) {
+            if (edge->getFlowCapacity() > 0) { // Se houver capacidade não utilizada
+                // Encontrar uma outra aresta com excesso de fluxo adjacente para a transferência
+                auto v = edge->getDest();
+                for (auto otherEdge : v->getAdj()) {
+                    if (otherEdge->getFlowCapacity() < 0) { // Se houver excesso de fluxo
+                        double transfer = std::min(edge->getFlowCapacity(), -otherEdge->getFlowCapacity());
+                        edge->setFlow(edge->getFlow() + transfer);
+                        otherEdge->setFlow(otherEdge->getFlow() - transfer);
+                        // Atualizar a flow_capacity
+                        edge->setFlowCapacity(edge->getWeight() - edge->getFlow());
+                        otherEdge->setFlowCapacity(otherEdge->getWeight() - otherEdge->getFlow());
+                    }
+                }
+            }
+        }
+    }
 }

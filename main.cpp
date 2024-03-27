@@ -676,6 +676,8 @@ int main(){
     cout << rede.average_flow_capacity() << endl;
     cout << rede.variance_flow_capacity() << endl;
     cout << rede.maximum_flow_capacity() << endl;
-    */
+    for (auto c : rede.FindAffectedCities("R_2")) {
+        cout << c << endl;
+    }*/
     return 0;
 }

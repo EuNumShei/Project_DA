@@ -432,3 +432,50 @@ void Rede::BalancedLoad() {
         }
     }
 }
+/*
+vector<string> Rede::FindAffectedCities(const string& reservoir) {
+    double MaxFlow = max_flow("C_10");
+
+    Reservoir* reservoirToRemove = nullptr;
+    auto it = reservoirs.find(reservoir);
+    if (it != reservoirs.end()) {
+        reservoirToRemove = &it->second;
+    } else {
+        // Reservoir not found
+        return {}; // Return an empty list as no cities are affected
+    }
+    // Temporarily disconnect the reservoir from the network
+    // Remove outgoing edges from the reservoir
+    Vertex<std::string>* reservoirVertex = g.findVertex(reservoir);
+    if (reservoirVertex) {
+        std::vector<Edge<std::string>*> outgoingEdges = reservoirVertex->getAdj();
+        for (Edge<std::string>* edge : outgoingEdges) {
+            // Remove the edge from the reservoir to its destination
+            g.removeEdge(reservoir, edge->getDest()->getInfo());
+        }
+    }
+    // After removing the reservoir's outgoing edges, re-calculate the flow
+    double newMaxFlow = max_flow("C_10");
+
+    // Restore the reservoir's outgoing edges to the network
+    // This step is important for maintaining the original state of the network
+    // (Assuming a function addBidirectionalEdge exists to restore edges)
+    if (reservoirVertex) {
+        std::vector<Edge<std::string>*> outgoingEdges = reservoirVertex->getAdj();
+        for (Edge<std::string>* edge : outgoingEdges) {
+            g.addBidirectionalEdge(reservoir, edge->getDest()->getInfo(), edge->getWeight());
+        }
+    }
+
+    // Determine affected cities
+    // Compare the new flow with the original flow to identify affected cities
+    std::vector<std::string> affectedCities;
+    for (const auto& cityPair : cities) {
+        City city = cityPair.second;
+        if (city.get_demand() > newMaxFlow) {
+            affectedCities.push_back(cityPair.first);
+        }
+    }
+
+    return affectedCities;
+}*/

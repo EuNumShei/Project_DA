@@ -41,6 +41,7 @@ public:
     double maximum_flow_capacity();
     double variance_flow_capacity();
     void BalancedLoad();
+    //vector<string> FindAffectedCities(const string& reservoirName);
 
 private:
     Graph<string> g;

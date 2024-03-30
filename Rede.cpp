@@ -6,6 +6,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <stack>
 #include "Rede.h"
 #include "City.h"
 #include "Reservoir.h"
@@ -303,7 +304,6 @@ void Rede::edmonds_karp() {
     }
     reservoirs = copia;
     stations = copia2;
-    escrever_ficheiro_flow();
 }
 
 void Rede::initialize_flow(){
@@ -329,7 +329,7 @@ void Rede::max_flow() {
     for(auto vertex : g.getVertexSet()){
         if(vertex->getInfo()[0] == 'C') {
             temp = vertex->getAdj()[0]->getFlow();
-            cout << "A cidade " << vertex->getInfo() << " tem um max flow de " << temp << " m³/sec" << endl;
+            cout << vertex->getInfo() << " -> Max Flow: " << temp << " m³/sec" << endl;
             total += temp;
             temp = 0;
         }
@@ -337,19 +337,19 @@ void Rede::max_flow() {
     cout << "O max flow total e " << total << " m³/sec" << endl;
 }
 
-void Rede::escrever_ficheiro_flow() {
-    ofstream outputFile("../Project_DA/flow.csv");
+void Rede::escrever_ficheiro_2_2() {
+    ofstream outputFile("../Project_DA/2_2.csv");
 
     if (!outputFile.is_open()) {
         cerr << "Error opening file!" << endl;
     }
-    string cabecalho = "City_ID,City_Code,Max_Flow,Demand";
+    string cabecalho = "City_Code,Max_Flow,Demand";
 
     outputFile << cabecalho << endl;
 
     for(auto v : g.getVertexSet()){
         if(v->getInfo()[0] == 'C'){
-            outputFile << to_string(cities.at(v->getInfo()).get_id()) << "," << v->getInfo() << "," << to_string(max_flow(v->getInfo())) << "," << to_string(cities.at(v->getInfo()).get_demand()) << endl;
+            outputFile << v->getInfo() << "," << to_string(max_flow(v->getInfo())) << "," << to_string(cities.at(v->getInfo()).get_demand()) << endl;
         }
     }
 
@@ -360,8 +360,8 @@ void Rede::escrever_ficheiro_flow() {
  *  no grafo
  *  Time complexity: O(l*w), being l the number of lines and w the number of words
  */
-void Rede::dados_reservatorios() {
-    ifstream in("../Project_DA/flow.csv");
+void Rede::dados_2_2() {
+    ifstream in("../Project_DA/2_2.csv");
     if (!in) {
         cerr << "Erro ao abrir o arquivo." << endl;
     } else {
@@ -370,7 +370,6 @@ void Rede::dados_reservatorios() {
         while (getline(in, linha)) {
             istringstream iss(linha);
             string palavra;
-            int id;
             string code;
             int flow;
             int demand;
@@ -378,12 +377,9 @@ void Rede::dados_reservatorios() {
             while (std::getline(iss, palavra, ',')) {
                 switch (count) {
                     case 0:
-                        id = stoi(palavra);
-                        break;
-                    case 1:
                         code = palavra;
                         break;
-                    case 2:
+                    case 1:
                         flow = stoi(palavra);
                         break;
                     default:
@@ -392,7 +388,141 @@ void Rede::dados_reservatorios() {
                 count++;
             }
             if (demand > flow){
-                cout << "A cidade " << code << " tem um defice de " << demand - flow << " m³/sec" << endl;
+                cout << code << " -> Deficit: " << demand - flow << " m³/sec" << endl;
+            }
+        }
+    }
+}
+
+int Rede::remover_reservatorio(string reservoir) {
+    auto source = g.findVertex(reservoir);
+    if(reservoir[0] != 'R' || source == nullptr) return 1;
+    double capacity = source->getIncoming()[0]->getWeight();
+    source->getIncoming()[0]->setCapacity(0);
+    edmonds_karp();
+    escrever_ficheiro_3_1();
+    source->getIncoming()[0]->setCapacity(capacity);
+    return 0;
+}
+
+int Rede::remover_station(string station){
+    auto source = g.findVertex(station);
+    if(source == nullptr || station[0] != 'P' || station[1] != 'S') return 1;
+    stack<double> capacities;
+    for(auto &edge : source->getIncoming()) {
+        capacities.push(edge->getWeight());
+        edge->setCapacity(0);
+    }
+    edmonds_karp();
+    escrever_ficheiro_3_2();
+    for(auto &edge : source->getIncoming()){
+        edge->setCapacity(capacities.top());
+        capacities.pop();
+    }
+    return 0;
+}
+
+void Rede::escrever_ficheiro_3_1() {
+    ofstream outputFile("../Project_DA/3_1.csv");
+
+    if (!outputFile.is_open()) {
+        cerr << "Error opening file!" << endl;
+    }
+    string cabecalho = "City_Code,Max_Flow,Demand";
+
+    outputFile << cabecalho << endl;
+
+    for(auto v : g.getVertexSet()){
+        if(v->getInfo()[0] == 'C'){
+            outputFile << v->getInfo() << "," << to_string(max_flow(v->getInfo())) << "," << to_string(cities.at(v->getInfo()).get_demand()) << endl;
+        }
+    }
+
+    outputFile.close();
+}
+
+void Rede::dados_3_1() {
+    ifstream in("../Project_DA/3_1.csv");
+    if (!in) {
+        cerr << "Erro ao abrir o arquivo." << endl;
+    } else {
+        string linha;
+        getline(in, linha);
+        while (getline(in, linha)) {
+            istringstream iss(linha);
+            string palavra;
+            string code;
+            int flow;
+            int demand;
+            int count = 0;
+            while (std::getline(iss, palavra, ',')) {
+                switch (count) {
+                    case 0:
+                        code = palavra;
+                        break;
+                    case 1:
+                        flow = stoi(palavra);
+                        break;
+                    default:
+                        demand = stoi(palavra);
+                }
+                count++;
+            }
+            if (demand > flow){
+                cout << code << " -> Deficit: " << demand - flow << " m³/sec" << endl;
+            }
+        }
+    }
+}
+
+void Rede::escrever_ficheiro_3_2() {
+    ofstream outputFile("../Project_DA/3_2.csv");
+
+    if (!outputFile.is_open()) {
+        cerr << "Error opening file!" << endl;
+    }
+    string cabecalho = "City_Code,Max_Flow,Demand";
+
+    outputFile << cabecalho << endl;
+
+    for(auto v : g.getVertexSet()){
+        if(v->getInfo()[0] == 'C'){
+            outputFile << v->getInfo() << "," << to_string(max_flow(v->getInfo())) << "," << to_string(cities.at(v->getInfo()).get_demand()) << endl;
+        }
+    }
+
+    outputFile.close();
+}
+
+void Rede::dados_3_2() {
+    ifstream in("../Project_DA/3_2.csv");
+    if (!in) {
+        cerr << "Erro ao abrir o arquivo." << endl;
+    } else {
+        string linha;
+        getline(in, linha);
+        while (getline(in, linha)) {
+            istringstream iss(linha);
+            string palavra;
+            string code;
+            int flow;
+            int demand;
+            int count = 0;
+            while (std::getline(iss, palavra, ',')) {
+                switch (count) {
+                    case 0:
+                        code = palavra;
+                        break;
+                    case 1:
+                        flow = stoi(palavra);
+                        break;
+                    default:
+                        demand = stoi(palavra);
+                }
+                count++;
+            }
+            if (demand > flow){
+                cout << code << " -> Deficit: " << demand - flow << " m³/sec" << endl;
             }
         }
     }

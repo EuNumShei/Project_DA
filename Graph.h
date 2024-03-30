@@ -366,6 +366,11 @@ void Edge<T>::setCost(double cost) {
     this->cost = cost;
 }
 
+template <class T>
+void Edge<T>::setCapacity(double capacity) {
+    this->weight = capacity;
+}
+
 /********************** Graph  ****************************/
 
 template <class T>

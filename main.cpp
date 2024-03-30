@@ -15,7 +15,6 @@ void indicacao_de_processo(){
 /** Define e apresenta uma mensagem inicial
  */
 void bem_vindo(){
-    cout << "Processamento finalizado." << endl << endl;
     cout << "-------------------------------------------------" << endl;
     cout << "-          Bem vindo ao sistema AUGUINHA          -" << endl;
     cout << "-------------------------------------------------" << endl << endl;
@@ -37,7 +36,7 @@ void print_inicio(const vector<string>& vetor) {
 * Time complexity: O(1)
 */
 void print_incorreto(){
-    cout << "Escrito incorretamente. Tente novamente: " ;
+    cout << "Escrito incorretamente. Tente novamente: " << endl;
 }
 
 /** Apresenta o menu inicial com os comandos existentes
@@ -45,15 +44,19 @@ void print_incorreto(){
 */
 void apresentacao_do_menu_inicial(){
     vector<string> vetor = {"1. Consultar o numero de cidades, reservatorios e estacoes",
-                            "2. Verificar a existencia ou nao de uma edge",
-                            "3. Verificar o max flow possivel de uma cidade",
-                            "4. Verificar a distribuicao por cidade",
-                            "5. Balancear a rede de distribuicao",
+                            "2. Verificar o max flow possivel de uma cidade",
+                            "3. Verificar a distribuicao por cidade",
+                            "4. Verificar o efeito da remocao de um reservatorio",
+                            "5. Verificar o efeito da remocao de uma estacao",
                             "6. Terminar programa",
                             "Escolha uma opção."};
 
     cout << "---------Menu inicial---------" << endl;
     print_inicio(vetor);
+}
+
+void menu_intermedio(){
+
 }
 
 /*void menu_de_paises(Sistema & sistema){
@@ -580,9 +583,8 @@ void menu_inicial(Rede & rede) {
     apresentacao_do_menu_inicial();
     while (true) {
         int comando;
-        string cidade;
+        string cidade, reservatorio, station;
         double max_flow;
-        string source, dest;
         cin >> comando;
 
         //safeguarding if comando is not an integer
@@ -605,26 +607,8 @@ void menu_inicial(Rede & rede) {
                 cin >> comando;
                 break;
             case 2:
-                cout << "Qual o codigo da source: ";
-
-                cin >> source;
-                cout << "Qual o codigo do dest: ";
-                cin >> dest;
-                if(rede.verificar_edge(source, dest)){
-                    cout << "Existe uma edge entre os 2 vertices" << endl;
-                }else{
-                    cout << "Nao existe uma edge entre os 2 vertices" << endl;
-                }
-
-                //show the results before showing the menu again
-                cout << "To go back to the menu, type anything and press enter: ";
-                cin >> comando;
-                break;
-
-            case 3:
                 rede.initialize_flow();
                 rede.edmonds_karp();
-
                 cout << "Qual o codigo da cidade (Caso pretender o max flow de todas as cidades, escreva a palavra todas): ";
                 while(true) {
                     cin >> cidade;
@@ -636,7 +620,7 @@ void menu_inicial(Rede & rede) {
                         if (max_flow == -1) {
                             print_incorreto();
                         }else{
-                            cout << "A cidade " << cidade << " tem um max flow de " << max_flow << " m³/sec" << endl;
+                            cout << cidade << " -> Max Flow: " << max_flow << " m³/sec" << endl;
                             break;
                         }
                     }
@@ -645,14 +629,37 @@ void menu_inicial(Rede & rede) {
                 cout << "To go back to the menu, type anything and press enter: ";
                 cin >> comando;
                 break;
+            case 3:
+                rede.initialize_flow();
+                rede.edmonds_karp();
+                rede.escrever_ficheiro_2_2();
+                rede.dados_2_2();
+                cout << "To go back to the menu, type anything and press enter: ";
+                cin >> comando;
+                break;
             case 4:
-                rede.dados_reservatorios();
-
+                rede.initialize_flow();
+                cout << "Qual o codigo do reservatorio: ";
+                cin >> reservatorio;
+                while(rede.remover_reservatorio(reservatorio)){
+                    print_incorreto();
+                    cin >> reservatorio;
+                }
+                rede.escrever_ficheiro_3_1();
+                rede.dados_3_1();
                 cout << "To go back to the menu, type anything and press enter: ";
                 cin >> comando;
                 break;
             case 5:
-
+                cout << "Qual o codigo da station: ";
+                cin >> station;
+                rede.initialize_flow();
+                while(rede.remover_station(station)){
+                    print_incorreto();
+                    cin >> station;
+                }
+                rede.escrever_ficheiro_3_2();
+                rede.dados_3_2();
                 cout << "To go back to the menu, type anything and press enter: ";
                 cin >> comando;
                 break;
@@ -662,21 +669,14 @@ void menu_inicial(Rede & rede) {
             default:
                 print_incorreto();
         }
-
     }
 }
 
 
 
 int main(){
-    indicacao_de_processo();
     Rede rede;
     bem_vindo();
     menu_inicial(rede);
-    /*rede.initialize_flow();
-    cout << rede.average_flow_capacity() << endl;
-    cout << rede.variance_flow_capacity() << endl;
-    cout << rede.maximum_flow_capacity() << endl;
-    */
     return 0;
 }

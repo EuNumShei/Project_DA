@@ -14,6 +14,12 @@
 
 using namespace std;
 
+/**
+ * @brief Parser para o ficheiro Cities.csv
+ * Lê o ficheiro Cities.csv e guarda as cidades num unordered_map
+ * Time complexity: O(n) sendo n o número de cidades
+ */
+
 void Rede::ler_ficheiro_cidades() {
     ifstream in("../Cities.csv");
     if (!in) {
@@ -58,10 +64,13 @@ void Rede::ler_ficheiro_cidades() {
     }
 }
 
-/** Funcao que le o ficheiro com as informacoes relativas aos aeroportos e guarda essa informacao
- *  no grafo
- *  Time complexity: O(l*w), being l the number of lines and w the number of words
+/**
+ * @brief Parser para o ficheiro Reservoir.csv
+ * Lê o ficheiro Reservoir.csv e guarda os reservatórios num unordered_map
+ * Time complexity: O(n) sendo n o número de reservatórios
+
  */
+
 void Rede::ler_ficheiro_reservatorios() {
     ifstream in("../Reservoir.csv");
     if (!in) {
@@ -106,10 +115,12 @@ void Rede::ler_ficheiro_reservatorios() {
     }
 }
 
-/** Funcao que le o ficheiro com as informacoes acerca dos voos existentes e coloca essa informacao
- *  no grafo
- *  Time complexity: O(l*w), being l the number of lines and w the number of words
+/**
+ * @brief Parser para o ficheiro Stations.csv
+ * Lê o ficheiro Stations.csv e guarda as estações num unordered_map
+ * Time complexity: O(n) sendo n o número de estações
  */
+
 void Rede::ler_ficheiro_estacoes() {
     ifstream in("../Stations.csv");
     if (!in) {
@@ -140,6 +151,12 @@ void Rede::ler_ficheiro_estacoes() {
         }
     }
 }
+
+/**
+ * @brief Parser para o ficheiro Pipes.csv
+ * Lê o ficheiro Pipes.csv e guarda as arestas no grafo
+ * Time complexity: O(n) sendo n o número de arestas
+ */
 
 void Rede::ler_ficheiro_pipes() {
     ifstream in("../Pipes.csv");
@@ -180,27 +197,41 @@ void Rede::ler_ficheiro_pipes() {
     }
 }
 
+/**
+ * Retorna o número de estações intermédias
+ * Time complexity: O(1)
+ */
+
 void Rede::numero_de_estacoes() {
     cout << "Numero atual de estacoes intermedias: " << stations.size() << "\n";
 }
 
-/*
-* Function that returns the total number of airports
-* Time complexity: O(1)
-*/
+/**
+ * Retorna o número de cidades
+ * Time complexity: O(1)
+ */
 
 void Rede::numero_de_cidades() {
     cout << "Numero atual de cidades: " << cities.size() << "\n";
 }
 
-/*
-* Function that returns the total number of flights
-* Time complexity: O(1)
-*/
+/**
+ * Retorna o número de reservatórios
+ * Time complexity: O(1)
+ */
 
 void Rede::numero_de_reservatorios() {
     cout << "Numero atual de reservatorios: " << reservoirs.size() << "\n";
 }
+
+/**
+ * Função que verifica se existe uma aresta entre dois vértices
+ *
+ * @param source - vértice de origem
+ * @param dest - vértice de destino
+ * @return true se existir uma aresta entre os dois vértices, false caso contrário
+ * Time complexity: O(n) sendo n o número de arestas do vértice source
+ */
 
 bool Rede::verificar_edge(const string& source, const string& dest) {
     auto v1 = g.findVertex(source);
@@ -215,6 +246,16 @@ bool Rede::verificar_edge(const string& source, const string& dest) {
     return false;
 }
 
+/**
+ * Testa o vértice 'w' e visita-o se as condições forem satisfeitas
+ *
+ * @param q - fila de vértices
+ * @param e - aresta
+ * @param w - vértice
+ * @param residual - capacidade residual
+ * Time complexity: O(1)
+ */
+
 // Function to test the given vertex 'w' and visit it if conditions are met
 void Rede::testAndVisit(std::queue< Vertex<string>*> &q, Edge<string> *e, Vertex<string> *w, double residual) {
 // Check if the vertex 'w' is not visited and there is residual capacity
@@ -225,6 +266,15 @@ void Rede::testAndVisit(std::queue< Vertex<string>*> &q, Edge<string> *e, Vertex
         q.push(w);
     }
 }
+
+/**
+ * Encontra um caminho aumentativo usando Breadth-First Search
+ *
+ * @param s - vértice de origem
+ * @param t - vértice de destino
+ * @return true se encontrar um caminho para o destino, false caso contrário
+ * Time complexity: O(V + E) sendo V o número de vértices e E o número de arestas
+ */
 
 // Function to find an augmenting path using Breadth-First Search
 bool Rede::findAugmentingPath(Vertex<string> *s, Vertex<string> *t) {
@@ -276,6 +326,15 @@ bool Rede::findAugmentingPath(Vertex<string> *s, Vertex<string> *t) {
 
 }
 
+/**
+ * Encontra a capacidade residual mínima ao longo do caminho aumentativo
+ *
+ * @param s - vértice de origem
+ * @param t - vértice de destino
+ * @return a capacidade residual mínima
+ * Time complexity: O(V) sendo V o número de vértices
+ */
+
 // Function to find the minimum residual capacity along the augmenting path
 double Rede::findMinResidualAlongPath(Vertex<string> *s, Vertex<string> *t) {
     double f = INF;
@@ -294,6 +353,15 @@ double Rede::findMinResidualAlongPath(Vertex<string> *s, Vertex<string> *t) {
 // Return the minimum residual capacity
     return f;
 }
+
+/**
+ * Aumenta o fluxo ao longo do caminho aumentativo com o valor de fluxo dado
+ *
+ * @param s - vértice de origem
+ * @param t - vértice de destino
+ * @param f - valor de fluxo
+ * Time complexity: O(V) sendo V o número de vértices
+ */
 
 // Function to augment flow along the augmenting path with the given flow value
 void Rede::augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f) {
@@ -317,6 +385,13 @@ void Rede::augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f) 
     }
 }
 
+/**
+ * @brief Implementa o algoritmo de Edmonds-Karp
+ * Utiliza as funções auxiliares findAugmentingPath, findMinResidualAlongPath e augmentFlowAlongPath para encontrar um caminho aumentativo e aumentar o fluxo ao longo do caminho
+ * @param source
+ * @param dest
+ */
+
 void Rede::edmonds_karp(const string &source, const string &dest) {
 // Main function implementing the Edmonds-Karp algorithm
 // Find source and target vertices in the graph
@@ -333,6 +408,11 @@ void Rede::edmonds_karp(const string &source, const string &dest) {
     }
 }
 
+/**
+ * Inicializa o fluxo em todas as arestas para 0
+ * Time complexity: O(V + E) sendo V o número de vértices e E o número de arestas
+ */
+
 void Rede::initialize_flow(){
     for (auto v : g.getVertexSet()) {
         for (auto e: v->getAdj()) {
@@ -341,6 +421,14 @@ void Rede::initialize_flow(){
         }
     }
 }
+
+/**
+ * Calcula o fluxo máximo de uma cidade
+ *
+ * @param cidade - nome da cidade
+ * @return o fluxo máximo da cidade
+ * Time complexity: O(V + E) sendo V o número de vértices e E o número de arestas
+ */
 
 double Rede::max_flow(const string& cidade) {
     double res = 0;
@@ -355,6 +443,10 @@ double Rede::max_flow(const string& cidade) {
     return res;
 }
 
+/**
+ * Calcula a capacidade média de fluxo
+ * Time complexity: O(V + E) sendo V o número de vértices e E o número de arestas
+ */
 
 double Rede::average_flow_capacity() {
     double soma = 0;
@@ -370,6 +462,11 @@ double Rede::average_flow_capacity() {
     res = soma / count;
     return res;
 }
+
+/**
+ * Calcula a variância da capacidade de fluxo
+ * Time complexity: O(V + E) sendo V o número de vértices e E o número de arestas
+ */
 
 double Rede::variance_flow_capacity() {
     double count = 0;
@@ -393,6 +490,11 @@ double Rede::variance_flow_capacity() {
     return variance;
 }
 
+/**
+ * Calcula a capacidade máxima de fluxo
+ * Time complexity: O(V + E) sendo V o número de vértices e E o número de arestas do grafo
+ */
+
 double Rede::maximum_flow_capacity() {
     double max_fc = 0;
     for (Vertex<string>* v : g.getVertexSet()) {;
@@ -405,6 +507,10 @@ double Rede::maximum_flow_capacity() {
     return max_fc;
 }
 
+/**
+ * Calcula a capacidade mínima de fluxo
+ * Time complexity: O(V + E) sendo V o número de vértices e E o número de arestas
+ */
 void Rede::BalancedLoad() {
     for (auto vertex : g.getVertexSet()) {
         for (auto edge : vertex->getAdj()) {

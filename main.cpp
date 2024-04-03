@@ -574,6 +574,11 @@ void menu_de_destinos_alcansaveis(Sistema & sistema){
 }
  */
 
+/** Menu inicial do programa
+ * Apresenta as opcoes disponiveis ao utilizador e chama a funcao correspondente ao comando introduzido
+ * @param rede que contém toda a informação sobre a rede de agua
+ */
+
 void menu_inicial(Rede & rede) {
     apresentacao_do_menu_inicial();
     while (true) {
@@ -654,6 +659,9 @@ void menu_inicial(Rede & rede) {
     }
 }
 
+
+/** Funcao principal que chama todas as outras funcoes necessárias para o programa correr
+ */
 
 
 int main(){

@@ -425,7 +425,7 @@ void Rede::initialize_flow(){
 /**
  * Calcula o fluxo máximo de uma cidade
  *
- * @param cidade - nome da cidade
+ * @param cidade nome da cidade
  * @return o fluxo máximo da cidade
  * Time complexity: O(V + E) sendo V o número de vértices e E o número de arestas
  */

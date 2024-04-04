@@ -48,7 +48,8 @@ void apresentacao_do_menu_inicial(){
                             "3. Verificar a distribuicao por cidade",
                             "4. Verificar o efeito da remocao de um reservatorio",
                             "5. Verificar o efeito da remocao de uma estacao",
-                            "6. Terminar programa",
+                            "6. Verificar o efeito da remocao de uma/varias pipes",
+                            "7. Terminar programa",
                             "Escolha uma opção."};
 
     cout << "---------Menu inicial---------" << endl;
@@ -580,11 +581,13 @@ void menu_de_destinos_alcansaveis(Sistema & sistema){
  */
 
 void menu_inicial(Rede & rede) {
+    bool done = false;
     apresentacao_do_menu_inicial();
     while (true) {
         int comando;
-        string cidade, reservatorio, station;
+        string cidade, reservatorio, station, orig, dest, more_edges = "yes";
         double max_flow;
+        vector<Edge<string>> edges;
         cin >> comando;
 
         //safeguarding if comando is not an integer
@@ -609,6 +612,7 @@ void menu_inicial(Rede & rede) {
             case 2:
                 rede.initialize_flow();
                 rede.edmonds_karp();
+                rede.escrever_ficheiro_2_2();
                 cout << "Qual o codigo da cidade (Caso pretender o max flow de todas as cidades, escreva a palavra todas): ";
                 while(true) {
                     cin >> cidade;
@@ -625,45 +629,80 @@ void menu_inicial(Rede & rede) {
                         }
                     }
                 }
+                done = true;
                 //show the results before showing the menu again
                 cout << "To go back to the menu, type anything and press enter: ";
                 cin >> comando;
                 break;
             case 3:
                 rede.initialize_flow();
-                rede.edmonds_karp();
-                rede.escrever_ficheiro_2_2();
+                if(!done){
+                    rede.edmonds_karp();
+                    rede.escrever_ficheiro_2_2();
+                }
                 rede.dados_2_2();
                 cout << "To go back to the menu, type anything and press enter: ";
                 cin >> comando;
                 break;
             case 4:
                 rede.initialize_flow();
+                if(!done){
+                    rede.edmonds_karp();
+                    rede.escrever_ficheiro_2_2();
+                    rede.initialize_flow();
+                }
                 cout << "Qual o codigo do reservatorio: ";
                 cin >> reservatorio;
                 while(rede.remover_reservatorio(reservatorio)){
                     print_incorreto();
                     cin >> reservatorio;
                 }
-                rede.escrever_ficheiro_3_1();
-                rede.dados_3_1();
                 cout << "To go back to the menu, type anything and press enter: ";
                 cin >> comando;
                 break;
             case 5:
+                rede.initialize_flow();
+                if(!done){
+                    rede.edmonds_karp();
+                    rede.escrever_ficheiro_2_2();
+                    rede.initialize_flow();
+                }
                 cout << "Qual o codigo da station: ";
                 cin >> station;
-                rede.initialize_flow();
                 while(rede.remover_station(station)){
                     print_incorreto();
                     cin >> station;
                 }
-                rede.escrever_ficheiro_3_2();
-                rede.dados_3_2();
                 cout << "To go back to the menu, type anything and press enter: ";
                 cin >> comando;
                 break;
             case 6:
+                rede.initialize_flow();
+                if(!done){
+                    rede.edmonds_karp();
+                    rede.escrever_ficheiro_2_2();
+                    rede.initialize_flow();
+                }
+                while(more_edges == "yes"){
+                    cout << "What is the code of the source: " << endl;
+                    cin >> orig;
+                    cout << "What is the code of the destination: " << endl;
+                    cin >> dest;
+                    while (!rede.verificar_edge(orig, dest)) {
+                        print_incorreto();
+                        cout << "What is the code of the source: " << endl;
+                        cin >> orig;
+                        cout << "What is the code of the destination: " << endl;
+                        cin >> dest;
+                    }
+                    cout << "If you desire anymore edges, type yes, else type anything else: " << endl;
+                    cin >> more_edges;
+                }
+                rede.remover_pipes();
+                cout << "To go back to the menu, type anything and press enter: ";
+                cin >> comando;
+                break;
+            case 7:
                 // guardar_dados();
                 return;
             default:

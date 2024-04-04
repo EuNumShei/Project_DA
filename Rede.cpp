@@ -15,7 +15,7 @@
 using namespace std;
 
 void Rede::ler_ficheiro_cidades() {
-    ifstream in("../Project_DA/Cities.csv");
+    ifstream in("../Cities_Madeira.csv");
     if (!in) {
         cerr << "Erro ao abrir o arquivo." << endl;
     } else {
@@ -63,7 +63,7 @@ void Rede::ler_ficheiro_cidades() {
  *  Time complexity: O(l*w), being l the number of lines and w the number of words
  */
 void Rede::ler_ficheiro_reservatorios() {
-    ifstream in("../Project_DA/Reservoir.csv");
+    ifstream in("../Reservoirs_Madeira.csv");
     if (!in) {
         cerr << "Erro ao abrir o arquivo." << endl;
     } else {
@@ -111,7 +111,7 @@ void Rede::ler_ficheiro_reservatorios() {
  *  Time complexity: O(l*w), being l the number of lines and w the number of words
  */
 void Rede::ler_ficheiro_estacoes() {
-    ifstream in("../Project_DA/Stations.csv");
+    ifstream in("../Stations_Madeira.csv");
     if (!in) {
         cerr << "Erro ao abrir o arquivo." << endl;
     } else {
@@ -142,7 +142,7 @@ void Rede::ler_ficheiro_estacoes() {
 }
 
 void Rede::ler_ficheiro_pipes() {
-    ifstream in("../Project_DA/Pipes.csv");
+    ifstream in("../Pipes_Madeira.csv");
     if (!in) {
         cerr << "Erro ao abrir o arquivo." << endl;
     } else {
@@ -207,8 +207,9 @@ bool Rede::verificar_edge(const string& source, const string& dest) {
     auto v2 = g.findVertex(dest);
     if (v1 == nullptr || v2 == nullptr)
         return false;
-    for(auto edge : v1->getAdj()){
+    for(auto &edge : v1->getAdj()){
         if(edge->getDest() == v2) {
+            edges.push_back(edge);
             return true;
         }
     }
@@ -338,7 +339,7 @@ void Rede::max_flow() {
 }
 
 void Rede::escrever_ficheiro_2_2() {
-    ofstream outputFile("../Project_DA/2_2.csv");
+    ofstream outputFile("../2_2.csv");
 
     if (!outputFile.is_open()) {
         cerr << "Error opening file!" << endl;
@@ -361,7 +362,7 @@ void Rede::escrever_ficheiro_2_2() {
  *  Time complexity: O(l*w), being l the number of lines and w the number of words
  */
 void Rede::dados_2_2() {
-    ifstream in("../Project_DA/2_2.csv");
+    ifstream in("../2_2.csv");
     if (!in) {
         cerr << "Erro ao abrir o arquivo." << endl;
     } else {
@@ -394,55 +395,51 @@ void Rede::dados_2_2() {
     }
 }
 
-int Rede::remover_reservatorio(string reservoir) {
+bool Rede::remover_reservatorio(string reservoir) {
     auto source = g.findVertex(reservoir);
-    if(reservoir[0] != 'R' || source == nullptr) return 1;
+    if(reservoir[0] != 'R' || source == nullptr) return true;
     double capacity = source->getIncoming()[0]->getWeight();
     source->getIncoming()[0]->setCapacity(0);
     edmonds_karp();
-    escrever_ficheiro_3_1();
+    dados_3_1();
     source->getIncoming()[0]->setCapacity(capacity);
-    return 0;
+    return false;
 }
 
-int Rede::remover_station(string station){
+bool Rede::remover_station(string station){
     auto source = g.findVertex(station);
-    if(source == nullptr || station[0] != 'P' || station[1] != 'S') return 1;
+    if(source == nullptr || station[0] != 'P' || station[1] != 'S') return true;
     stack<double> capacities;
     for(auto &edge : source->getIncoming()) {
         capacities.push(edge->getWeight());
         edge->setCapacity(0);
     }
     edmonds_karp();
-    escrever_ficheiro_3_2();
+    dados_3_2();
     for(auto &edge : source->getIncoming()){
         edge->setCapacity(capacities.top());
         capacities.pop();
     }
-    return 0;
+    return false;
 }
 
-void Rede::escrever_ficheiro_3_1() {
-    ofstream outputFile("../Project_DA/3_1.csv");
-
-    if (!outputFile.is_open()) {
-        cerr << "Error opening file!" << endl;
+void Rede::remover_pipes(){
+    stack<double> capacities;
+    for (auto &edge : edges) {
+        capacities.push(edge->getWeight());
+        edge->setCapacity(0);
     }
-    string cabecalho = "City_Code,Max_Flow,Demand";
-
-    outputFile << cabecalho << endl;
-
-    for(auto v : g.getVertexSet()){
-        if(v->getInfo()[0] == 'C'){
-            outputFile << v->getInfo() << "," << to_string(max_flow(v->getInfo())) << "," << to_string(cities.at(v->getInfo()).get_demand()) << endl;
-        }
+    edmonds_karp();
+    dados_3_3();
+    for (auto &edge: edges) {
+        edge->setCapacity(capacities.top());
+        capacities.pop();
     }
-
-    outputFile.close();
+    edges.clear();
 }
 
 void Rede::dados_3_1() {
-    ifstream in("../Project_DA/3_1.csv");
+    ifstream in("../2_2.csv");
     if (!in) {
         cerr << "Erro ao abrir o arquivo." << endl;
     } else {
@@ -453,7 +450,6 @@ void Rede::dados_3_1() {
             string palavra;
             string code;
             int flow;
-            int demand;
             int count = 0;
             while (std::getline(iss, palavra, ',')) {
                 switch (count) {
@@ -464,38 +460,20 @@ void Rede::dados_3_1() {
                         flow = stoi(palavra);
                         break;
                     default:
-                        demand = stoi(palavra);
+                        break;
                 }
                 count++;
             }
-            if (demand > flow){
-                cout << code << " -> Deficit: " << demand - flow << " m³/sec" << endl;
+            double max_flow_2 = max_flow(code);
+            if (max_flow_2 < flow){
+                cout << code << " -> Old Flow: " << flow << " m³/sec || New Flow: " << max_flow_2 << " m³/sec" << endl;
             }
         }
     }
-}
-
-void Rede::escrever_ficheiro_3_2() {
-    ofstream outputFile("../Project_DA/3_2.csv");
-
-    if (!outputFile.is_open()) {
-        cerr << "Error opening file!" << endl;
-    }
-    string cabecalho = "City_Code,Max_Flow,Demand";
-
-    outputFile << cabecalho << endl;
-
-    for(auto v : g.getVertexSet()){
-        if(v->getInfo()[0] == 'C'){
-            outputFile << v->getInfo() << "," << to_string(max_flow(v->getInfo())) << "," << to_string(cities.at(v->getInfo()).get_demand()) << endl;
-        }
-    }
-
-    outputFile.close();
 }
 
 void Rede::dados_3_2() {
-    ifstream in("../Project_DA/3_2.csv");
+    ifstream in("../2_2.csv");
     if (!in) {
         cerr << "Erro ao abrir o arquivo." << endl;
     } else {
@@ -506,7 +484,6 @@ void Rede::dados_3_2() {
             string palavra;
             string code;
             int flow;
-            int demand;
             int count = 0;
             while (std::getline(iss, palavra, ',')) {
                 switch (count) {
@@ -517,12 +494,47 @@ void Rede::dados_3_2() {
                         flow = stoi(palavra);
                         break;
                     default:
-                        demand = stoi(palavra);
+                        break;
                 }
                 count++;
             }
-            if (demand > flow){
-                cout << code << " -> Deficit: " << demand - flow << " m³/sec" << endl;
+            double max_flow_2 = max_flow(code);
+            if (max_flow_2 < flow){
+                cout << code << " -> Old Flow: " << flow << " m³/sec || New Flow: " << max_flow_2 << " m³/sec" << endl;
+            }
+        }
+    }
+}
+
+void Rede::dados_3_3(){
+    ifstream in("../2_2.csv");
+    if (!in) {
+        cerr << "Erro ao abrir o arquivo." << endl;
+    } else {
+        string linha;
+        getline(in, linha);
+        while (getline(in, linha)) {
+            istringstream iss(linha);
+            string palavra;
+            string code;
+            int flow;
+            int count = 0;
+            while (std::getline(iss, palavra, ',')) {
+                switch (count) {
+                    case 0:
+                        code = palavra;
+                        break;
+                    case 1:
+                        flow = stoi(palavra);
+                        break;
+                    default:
+                        break;
+                }
+                count++;
+            }
+            double max_flow_2 = max_flow(code);
+            if (max_flow_2 < flow){
+                cout << code << " -> Old Flow: " << flow << " m³/sec || New Flow: " << max_flow_2 << " m³/sec" << endl;
             }
         }
     }

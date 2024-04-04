@@ -53,20 +53,19 @@ public:
     double max_flow(const string& cidade);
     void max_flow();
     void escrever_ficheiro_2_2();
-    void escrever_ficheiro_3_1();
     void dados_2_2();
     void dados_3_1();
-    int remover_reservatorio(string reservoir);
+    bool remover_reservatorio(string reservoir);
     void dados_3_2();
-    void escrever_ficheiro_3_2();
-    int remover_station(string station);
+    bool remover_station(string station);
+    void remover_pipes();
+    void dados_3_3();
 private:
     Graph<string> g;
     std::unordered_map<string, Station> stations;
     std::unordered_map<string, Reservoir> reservoirs;
     std::unordered_map<string, City> cities;
-
-
+    vector<Edge<string> *> edges;
 };
 
 

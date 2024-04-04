@@ -582,25 +582,15 @@ void menu_de_destinos_alcansaveis(Sistema & sistema){
 
 void menu_inicial(Rede & rede) {
     bool done = false;
-    apresentacao_do_menu_inicial();
     while (true) {
-        int comando;
+        apresentacao_do_menu_inicial();
+        char comando;
         string cidade, reservatorio, station, orig, dest, more_edges = "yes";
         double max_flow;
-        vector<Edge<string>> edges;
         cin >> comando;
 
-        //safeguarding if comando is not an integer
-        if(cin.fail()){
-            cin.clear();
-            cin.ignore(10000, '\n');
-            print_incorreto();
-            apresentacao_do_menu_inicial();
-            continue;
-        }
-
         switch (comando) {
-            case 1:
+            case '1':
                 rede.numero_de_cidades();
                 rede.numero_de_reservatorios();
                 rede.numero_de_estacoes();
@@ -609,7 +599,7 @@ void menu_inicial(Rede & rede) {
                 cout << "To go back to the menu, type anything and press enter: ";
                 cin >> comando;
                 break;
-            case 2:
+            case '2':
                 rede.initialize_flow();
                 rede.edmonds_karp();
                 rede.escrever_ficheiro_2_2();
@@ -634,7 +624,7 @@ void menu_inicial(Rede & rede) {
                 cout << "To go back to the menu, type anything and press enter: ";
                 cin >> comando;
                 break;
-            case 3:
+            case '3':
                 rede.initialize_flow();
                 if(!done){
                     rede.edmonds_karp();
@@ -644,7 +634,7 @@ void menu_inicial(Rede & rede) {
                 cout << "To go back to the menu, type anything and press enter: ";
                 cin >> comando;
                 break;
-            case 4:
+            case '4':
                 rede.initialize_flow();
                 if(!done){
                     rede.edmonds_karp();
@@ -660,7 +650,7 @@ void menu_inicial(Rede & rede) {
                 cout << "To go back to the menu, type anything and press enter: ";
                 cin >> comando;
                 break;
-            case 5:
+            case '5':
                 rede.initialize_flow();
                 if(!done){
                     rede.edmonds_karp();
@@ -676,7 +666,7 @@ void menu_inicial(Rede & rede) {
                 cout << "To go back to the menu, type anything and press enter: ";
                 cin >> comando;
                 break;
-            case 6:
+            case '6':
                 rede.initialize_flow();
                 if(!done){
                     rede.edmonds_karp();
@@ -702,7 +692,7 @@ void menu_inicial(Rede & rede) {
                 cout << "To go back to the menu, type anything and press enter: ";
                 cin >> comando;
                 break;
-            case 7:
+            case '7':
                 // guardar_dados();
                 return;
             default:

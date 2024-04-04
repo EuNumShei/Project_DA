@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/Project_DA.dir/main.cpp.o CMakeFiles/Project_DA.dir/Rede.cpp.o -o Project_DA 

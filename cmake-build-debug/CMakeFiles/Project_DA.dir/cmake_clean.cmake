@@ -1,10 +1,12 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Project_DA.dir/Rede.cpp.o"
-  "CMakeFiles/Project_DA.dir/Rede.cpp.o.d"
-  "CMakeFiles/Project_DA.dir/main.cpp.o"
-  "CMakeFiles/Project_DA.dir/main.cpp.o.d"
-  "Project_DA"
+  "CMakeFiles/Project_DA.dir/Rede.cpp.obj"
+  "CMakeFiles/Project_DA.dir/Rede.cpp.obj.d"
+  "CMakeFiles/Project_DA.dir/main.cpp.obj"
+  "CMakeFiles/Project_DA.dir/main.cpp.obj.d"
+  "Project_DA.exe"
+  "Project_DA.exe.manifest"
   "Project_DA.pdb"
+  "libProject_DA.dll.a"
 )
 
 # Per-language clean rules from dependency scanning.

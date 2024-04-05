@@ -2,7 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "Project_DA"
+			"path" : "Project_DA.exe"
+		},
+		{
+			"path" : "Project_DA.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -49,7 +52,7 @@
 			[
 				{
 					"backtrace" : 2,
-					"path" : "/home/eunumshei/Desktop/ProjectDA/Project_DA/."
+					"path" : "C:/Users/julio/OneDrive/Documentos/DA/Project_DA/."
 				}
 			],
 			"language" : "CXX",
@@ -80,12 +83,16 @@
 			{
 				"fragment" : "",
 				"role" : "flags"
+			},
+			{
+				"fragment" : "-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32",
+				"role" : "libraries"
 			}
 		],
 		"language" : "CXX"
 	},
 	"name" : "Project_DA",
-	"nameOnDisk" : "Project_DA",
+	"nameOnDisk" : "Project_DA.exe",
 	"paths" : 
 	{
 		"build" : ".",

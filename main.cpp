@@ -65,6 +65,10 @@ void menu_intermedio(){
 
 }
 
+/** Menu inicial que apresenta as opções disponíveis ao utilizador
+ * @param rede - rede de cidades, reservatórios e estações
+ * Time complexity: O(n)
+ */
 
 void menu_inicial(Rede & rede) {
     bool done = false;
@@ -213,7 +217,9 @@ void menu_inicial(Rede & rede) {
     }
 }
 
-
+/** Função principal que inicia todo o programa
+ * @return 0
+ */
 
 int main(){
     Rede rede;

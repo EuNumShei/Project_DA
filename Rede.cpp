@@ -14,6 +14,11 @@
 
 using namespace std;
 
+/**@brief Parser de cidades
+ * Lê o ficheiro Cities.csv e guarda as cidades num unordered_map
+ * Time complexity: O(c) sendo c o número de cidadesn
+ */
+
 void Rede::ler_ficheiro_cidades() {
     ifstream in("../Cities.csv");
     if (!in) {
@@ -59,10 +64,11 @@ void Rede::ler_ficheiro_cidades() {
     }
 }
 
-/** Funcao que le o ficheiro com as informacoes relativas aos aeroportos e guarda essa informacao
- *  no grafo
- *  Time complexity: O(l*w), being l the number of lines and w the number of words
+/**@brief Parser de reservatórios
+ * Lê o ficheiro Reservoir.csv e guarda os reservatórios num unordered_map
+ * Time complexity: O(r) sendo r o número de reservatórios
  */
+
 void Rede::ler_ficheiro_reservatorios() {
     ifstream in("../Reservoir.csv");
     if (!in) {
@@ -108,10 +114,11 @@ void Rede::ler_ficheiro_reservatorios() {
     }
 }
 
-/** Funcao que le o ficheiro com as informacoes acerca dos voos existentes e coloca essa informacao
- *  no grafo
- *  Time complexity: O(l*w), being l the number of lines and w the number of words
+/**@brief Parser de estações
+ * Lê o ficheiro Stations.csv e guarda as estações num unordered_map
+ * Time complexity: O(e) sendo e o número de estações
  */
+
 void Rede::ler_ficheiro_estacoes() {
     ifstream in("../Stations.csv");
     if (!in) {
@@ -145,6 +152,11 @@ void Rede::ler_ficheiro_estacoes() {
         }
     }
 }
+
+/**@brief Parser de pipes
+ * Lê o ficheiro Pipes.csv e guarda as pipes no grafo
+ * Time complexity: O(a) sendo a o número de arestas
+ */
 
 void Rede::ler_ficheiro_pipes() {
     ifstream in("../Pipes.csv");
@@ -188,30 +200,43 @@ void Rede::ler_ficheiro_pipes() {
     }
 }
 
+/**
+ * Retorna o número de estações intermédias
+ * Time complexity: O(1)
+ */
+
 void Rede::numero_de_estacoes() {
 
     cout << "|      Número atual de estações intermédias: " << stations.size()<< "\t\t\t\t\t\t\t|" << "\n";
 }
 
-/*
-* Function that returns the total number of airports
-* Time complexity: O(1)
-*/
+/**
+ * Retorna o número de cidades
+ * Time complexity: O(1)
+ */
 
 void Rede::numero_de_cidades() {
 
     cout << "|      Número atual de cidades: " << cities.size() << "\t\t\t\t\t\t\t\t\t\t|"<< "\n";
 }
 
-/*
-* Function that returns the total number of flights
-* Time complexity: O(1)
-*/
+/**
+ * Retorna o número de reservatórios
+ * Time complexity: O(1)
+ */
 
 void Rede::numero_de_reservatorios() {
 
     cout << "|      Número atual de reservatórios: "<< reservoirs.size() << "\t\t\t\t\t\t\t\t|" << "\n";
 }
+
+/**
+ * Verifica se existe uma aresta entre dois vértices
+ * Time complexity: O(n) sendo n o número de arestas adjacentes ao vértice source
+ * @param source - vértice de origem
+ * @param dest - vértice de destino
+ * @return true se a aresta existir, falso caso contrário
+ */
 
 bool Rede::verificar_edge(const string& source, const string& dest) {
     auto v1 = g.findVertex(source);
@@ -227,6 +252,15 @@ bool Rede::verificar_edge(const string& source, const string& dest) {
     return false;
 }
 
+/**
+ * Testa o vértice 'w' dado e visitá-lo se as condições forem cumpridas
+ * Time complexity: O(1)
+ * @param q - queue de vértices
+ * @param e - pipe
+ * @param w - vértice
+ * @param residual - capacidade residual
+ */
+
 // Function to test the given vertex 'w' and visit it if conditions are met
 void Rede::testAndVisit(std::queue< Vertex<string>*> &q, Edge<string> *e, Vertex<string> *w, double residual) {
 // Check if the vertex 'w' is not visited and there is residual capacity
@@ -236,6 +270,14 @@ void Rede::testAndVisit(std::queue< Vertex<string>*> &q, Edge<string> *e, Vertex
         q.push(w);
     }
 }
+
+/**
+ * Encontra um caminho aumentativo usando Breadth-First Search
+ * Time complexity: O(V + E) sendo V o número de vértices e E o número de arestas
+ * @param s - vértice de origem
+ * @param t - vértice de destino
+ * @return true se um caminho para o destino for encontrado, falso caso contrário
+ */
 
 // Function to find an augmenting path using Breadth-First Search
 bool Rede::findAugmentingPath(Vertex<string> *s, Vertex<string> *t) {
@@ -264,6 +306,14 @@ bool Rede::findAugmentingPath(Vertex<string> *s, Vertex<string> *t) {
     return t->isVisited();
 }
 
+/**
+ * Encontra a capacidade residual mínima ao longo do caminho aumentativo
+ * Time complexity: O(V) sendo V o número de vértices
+ * @param s - vértice de origem
+ * @param t - vértice de destino
+ * @return capacidade residual mínima - double
+ */
+
 // Function to find the minimum residual capacity along the augmenting path
 double Rede::findMinResidualAlongPath(Vertex<string> *s, Vertex<string> *t) {
     double f = INF;
@@ -283,6 +333,14 @@ double Rede::findMinResidualAlongPath(Vertex<string> *s, Vertex<string> *t) {
     return f;
 }
 
+/**
+ * Função para aumentar o fluxo ao longo do caminho aumentativo com o valor de fluxo dado
+ * Time complexity: O(V) sendo V o número de vértices
+ * @param s - vértice de origem
+ * @param t - vértice de destino
+ * @param f - valor de fluxo
+ */
+
 // Function to augment flow along the augmenting path with the given flow value
 void Rede::augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f) {
 // Traverse the augmenting path and update the flow values accordingly
@@ -299,6 +357,11 @@ void Rede::augmentFlowAlongPath(Vertex<string> *s, Vertex<string> *t, double f) 
         }
     }
 }
+
+/**
+* Algoritmo de Edmonds-Karp para encontrar o fluxo máximo
+* Time complexity: O(V*E²) sendo V o número de vértices e E o número de arestas
+*/
 
 void Rede::edmonds_karp() {
     unordered_map<string, Reservoir> copia = reservoirs;
@@ -318,6 +381,11 @@ void Rede::edmonds_karp() {
     stations = copia2;
 }
 
+/**
+ * Inicializa o fluxo em todas as arestas para 0
+ * Time complexity: O(V+A) sendo V o número de vértices e A o número de arestas
+ */
+
 void Rede::initialize_flow(){
     for (auto v : g.getVertexSet()) {
         for (auto e: v->getAdj()) {
@@ -325,6 +393,13 @@ void Rede::initialize_flow(){
         }
     }
 }
+
+/**
+ * Retorna o fluxo máximo de uma cidade
+ * Time complexity: O(1)
+ * @param cidade - nome da cidade
+ * @return fluxo máximo - double
+ */
 
 double Rede::max_flow(const std::string &cidade) {
     double res = -1;
@@ -334,6 +409,11 @@ double Rede::max_flow(const std::string &cidade) {
     }
     return res;
 }
+
+/**
+ * Retorna o fluxo máximo de todas as cidades
+ * Time complexity: O(V) sendo V o número de vértices
+ */
 
 void Rede::max_flow() {
     double total = 0;
@@ -358,6 +438,11 @@ void Rede::max_flow() {
     cout  << "-------------------------------------------------------------------------" << std::endl;
 }
 
+/**
+ * Escreve o ficheiro 2_2.csv
+ * Time complexity: O(V) sendo V o número de vértices
+ */
+
 void Rede::escrever_ficheiro_2_2() {
     ofstream outputFile("../2_2.csv");
 
@@ -377,10 +462,11 @@ void Rede::escrever_ficheiro_2_2() {
     outputFile.close();
 }
 
-/** Funcao que le o ficheiro com as informacoes acerca dos voos existentes e coloca essa informacao
- *  no grafo
- *  Time complexity: O(l*w), being l the number of lines and w the number of words
+/**
+ * Escreve o ficheiro 3_1.csv
+ * Time complexity: O(V) sendo V o número de vértices
  */
+
 void Rede::dados_2_2() {
     ifstream in("../2_2.csv");
     if (!in) {
@@ -424,6 +510,16 @@ void Rede::dados_2_2() {
     cout << "-------------------------------------------------------------------------" << endl;
 }
 
+/**
+ * @brief Remove um reservatório da rede
+ * Esta função é responsável por remover temporariamente um reservatório da rede, recalcular o fluxo máximo na rede usando o algoritmo de Edmonds-Karp e, em seguida, restaurar o reservatório ao seu estado original.
+ *
+ * @param reservoir Uma string que representa o reservatório a ser removido.
+ * @return Retorna verdadeiro se o reservatório não existir na rede ou se o código do reservatório não começar com 'R'. Caso contrário, retorna falso indicando que o reservatório foi removido com sucesso.
+ *
+ * Time complexity: O(V*E²), onde V é o número de vértices e E é o número de arestas no grafo
+ */
+
 bool Rede::remover_reservatorio(string reservoir) {
     auto source = g.findVertex(reservoir);
     if(reservoir[0] != 'R' || source == nullptr) return true;
@@ -434,6 +530,17 @@ bool Rede::remover_reservatorio(string reservoir) {
     source->getIncoming()[0]->setCapacity(capacity);
     return false;
 }
+
+/**
+ * @brief Remove uma estação da rede
+ *
+ * Esta função é responsável por remover temporariamente uma estação da rede, recalcular o fluxo máximo na rede usando o algoritmo de Edmonds-Karp e, em seguida, restaurar a estação ao seu estado original.
+ *
+ * @param station Uma string que representa a estação a ser removida.
+ * @return Retorna verdadeiro se a estação não existir na rede ou se o código da estação não começar com 'PS'. Caso contrário, retorna falso indicando que a estação foi removida com sucesso.
+ *
+ * Time Complexity: O(V*E² + E), onde V é o número de vértices e E é o número de arestas no grafo. Isso é dominado pela chamada para o algoritmo de Edmonds-Karp e pela iteração sobre as arestas de entrada da estação.
+ */
 
 bool Rede::remover_station(string station){
     auto source = g.findVertex(station);
@@ -451,6 +558,16 @@ bool Rede::remover_station(string station){
     }
     return false;
 }
+
+/**
+ * @brief Remove uma ou mais pipes da rede
+ *
+ * Esta função é responsável por remover temporariamente uma ou mais pipes da rede, recalcular o fluxo máximo na rede usando o algoritmo de Edmonds-Karp e, em seguida, restaurar as pipes ao seu estado original.
+ *
+ * @param pipes Um vetor de strings que representa as pipes a serem removidas.
+ *
+ * Time Complexity: O(V*E² + E), onde V é o número de vértices e E é o número de arestas no grafo.
+ */
 
 void Rede::remover_pipes(){
     stack<double> capacities;
@@ -474,6 +591,17 @@ void Rede::remover_pipes(){
     }
     edges.clear();
 }
+
+/**
+ * @brief Analisa os dados após a remoção de um reservatório
+ *
+ * Esta função lê o arquivo `2_2.csv`, que contém informações sobre o fluxo máximo de cada cidade. Para cada cidade, a função compara o fluxo máximo antigo (lido do arquivo) com o novo fluxo máximo (calculado após a remoção de um reservatório). Se o novo fluxo máximo for menor que o antigo, a função imprime essas informações.
+ *
+ * @note Esta função assume que o arquivo `2_2.csv` está no formato correto e que a primeira linha é um cabeçalho que deve ser ignorado.
+ *
+ * Complexidade de tempo: O(n), onde n é o número de linhas no arquivo `2_2.csv` (ou seja, o número de cidades).
+ */
+
 
 void Rede::dados_3_1() {
     ifstream in("../2_2.csv");
@@ -512,6 +640,14 @@ void Rede::dados_3_1() {
     }
 }
 
+/**
+ * @brief Analisa os dados após a remoção de uma estação
+ * Esta função lê o arquivo `2_2.csv`, que contém informações sobre o fluxo máximo de cada cidade. Para cada cidade, a função compara o fluxo máximo antigo (lido do arquivo) com o novo fluxo máximo (calculado após a remoção de uma estação). Se o novo fluxo máximo for menor que o antigo, a função imprime essas informações.
+ * @note Esta função assume que o arquivo `2_2.csv` está no formato correto e que a primeira linha é um cabeçalho que deve ser ignorado.
+ * Complexidade de tempo: O(n), onde n é o número de linhas no arquivo `2_2.csv` (ou seja, o número de cidades).
+
+ */
+
 void Rede::dados_3_2() {
     ifstream in("../2_2.csv");
     if (!in) {
@@ -549,6 +685,13 @@ void Rede::dados_3_2() {
         }
     }
 }
+
+/**
+ * @brief Analisa os dados após a remoção de uma ou mais pipes
+ * Esta função lê o arquivo `2_2.csv`, que contém informações sobre o fluxo máximo de cada cidade. Para cada cidade, a função compara o fluxo máximo antigo (lido do arquivo) com o novo fluxo máximo (calculado após a remoção de uma ou mais pipes). Se o novo fluxo máximo for menor que o antigo, a função imprime essas informações.
+ * @note Esta função assume que o arquivo `2_2.csv` está no formato correto e que a primeira linha é um cabeçalho que deve ser ignorado.
+ * Complexidade de tempo: O(n), onde n é o número de linhas no arquivo `2_2.csv` (ou seja, o número de cidades).
+ */
 
 void Rede::dados_3_3(){
     ifstream in("../2_2.csv");

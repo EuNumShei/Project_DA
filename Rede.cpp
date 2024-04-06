@@ -189,7 +189,8 @@ void Rede::ler_ficheiro_pipes() {
 }
 
 void Rede::numero_de_estacoes() {
-    cout << "Numero atual de estacoes intermedias: " << stations.size() << "\n";
+
+    cout << "|      Número atual de estações intermédias: " << stations.size()<< "\t\t\t\t\t\t\t|" << "\n";
 }
 
 /*
@@ -198,7 +199,8 @@ void Rede::numero_de_estacoes() {
 */
 
 void Rede::numero_de_cidades() {
-    cout << "Numero atual de cidades: " << cities.size() << "\n";
+
+    cout << "|      Número atual de cidades: " << cities.size() << "\t\t\t\t\t\t\t\t\t\t|"<< "\n";
 }
 
 /*
@@ -207,7 +209,8 @@ void Rede::numero_de_cidades() {
 */
 
 void Rede::numero_de_reservatorios() {
-    cout << "Numero atual de reservatorios: " << reservoirs.size() << "\n";
+
+    cout << "|      Número atual de reservatórios: "<< reservoirs.size() << "\t\t\t\t\t\t\t\t|" << "\n";
 }
 
 bool Rede::verificar_edge(const string& source, const string& dest) {
@@ -335,15 +338,24 @@ double Rede::max_flow(const std::string &cidade) {
 void Rede::max_flow() {
     double total = 0;
     double temp = 0;
+    cout << endl << "--------------------- MAX FLOW DE TODAS AS CIDADES ----------------------" << std::endl;
+    std::cout << "|\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t|" << endl;
     for(auto vertex : g.getVertexSet()){
         if(vertex->getInfo()[0] == 'C') {
             temp = vertex->getAdj()[0]->getFlow();
-            cout << vertex->getInfo() << " -> Max Flow: " << temp << " m³/sec" << endl;
+            string adjusted;
+            if((temp > 1000) && vertex->getInfo().length() == 3) adjusted = " m³/sec\t\t\t\t\t\t\t\t\t\t|";
+            else if (temp > 1000) adjusted = " m³/sec\t\t\t\t\t\t\t\t\t|";
+            else adjusted = " m³/sec\t\t\t\t\t\t\t\t\t\t|";
+            cout << "|      " <<vertex->getInfo() << " -> Max Flow: " << temp << adjusted << endl;
             total += temp;
             temp = 0;
         }
     }
-    cout << "O max flow total e " << total << " m³/sec" << endl;
+    std::cout << "|\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t|";
+    cout << endl << "|      O max flow total e " << total << " m³/sec \t\t\t\t\t\t\t\t\t|" << endl;
+
+    cout  << "-------------------------------------------------------------------------" << std::endl;
 }
 
 void Rede::escrever_ficheiro_2_2() {
@@ -376,6 +388,9 @@ void Rede::dados_2_2() {
     } else {
         string linha;
         getline(in, linha);
+
+
+
         while (getline(in, linha)) {
             istringstream iss(linha);
             string palavra;
@@ -383,6 +398,8 @@ void Rede::dados_2_2() {
             int flow;
             int demand;
             int count = 0;
+
+
             while (std::getline(iss, palavra, ',')) {
                 switch (count) {
                     case 0:
@@ -396,11 +413,15 @@ void Rede::dados_2_2() {
                 }
                 count++;
             }
-            if (demand > flow){
-                cout << code << " -> Deficit: " << demand - flow << " m³/sec" << endl;
+
+            if (demand > flow){ //não sei se é para deixar assim ou por >=
+                cout << "|      " <<code << " -> Deficit: " << demand - flow << " m³/sec\t\t\t\t\t\t\t\t\t\t|" << endl;
             }
+
         }
+
     }
+    cout << "-------------------------------------------------------------------------" << endl;
 }
 
 bool Rede::remover_reservatorio(string reservoir) {
@@ -461,6 +482,9 @@ void Rede::dados_3_1() {
     } else {
         string linha;
         getline(in, linha);
+        cout << "------------------------ REMOÇÃO DO RESERVATÓRIO ------------------------" << endl;
+
+        std::cout << "|\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t|" << endl;
         while (getline(in, linha)) {
             istringstream iss(linha);
             string palavra;
@@ -482,7 +506,7 @@ void Rede::dados_3_1() {
             }
             double max_flow_2 = max_flow(code);
             if (max_flow_2 < flow){
-                cout << code << " -> Old Flow: " << flow << " m³/sec || New Flow: " << max_flow_2 << " m³/sec" << endl;
+                cout << "|      "<< code << " -> Old Flow: " << flow << " m³/sec || New Flow: " << max_flow_2 << " m³/sec\t\t\t\t|" << endl;
             }
         }
     }
@@ -493,8 +517,12 @@ void Rede::dados_3_2() {
     if (!in) {
         cerr << "Erro ao abrir o arquivo." << endl;
     } else {
+
         string linha;
         getline(in, linha);
+        cout << "-------------------------- REMOÇÃO DA ESTAÇÃO ---------------------------" << endl;
+
+        std::cout << "|\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t|";
         while (getline(in, linha)) {
             istringstream iss(linha);
             string palavra;
@@ -516,7 +544,7 @@ void Rede::dados_3_2() {
             }
             double max_flow_2 = max_flow(code);
             if (max_flow_2 < flow){
-                cout << code << " -> Old Flow: " << flow << " m³/sec || New Flow: " << max_flow_2 << " m³/sec" << endl;
+                cout << endl << "|      "<< code << " -> Old Flow: " << flow << " m³/sec || New Flow: " << max_flow_2 << " m³/sec\t\t\t\t|" << endl;
             }
         }
     }
@@ -529,6 +557,9 @@ void Rede::dados_3_3(){
     } else {
         string linha;
         getline(in, linha);
+        cout << "--------------------------- REMOÇÃO DA PIPE -----------------------------" << endl;
+
+        std::cout << "|\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t|";
         while (getline(in, linha)) {
             istringstream iss(linha);
             string palavra;
@@ -550,7 +581,7 @@ void Rede::dados_3_3(){
             }
             double max_flow_2 = max_flow(code);
             if (max_flow_2 < flow){
-                cout << code << " -> Old Flow: " << flow << " m³/sec || New Flow: " << max_flow_2 << " m³/sec" << endl;
+                cout << endl << "|      "<< code << " -> Old Flow: " << flow << " m³/sec || New Flow: " << max_flow_2 << " m³/sec\t\t\t\t|" << endl;
             }
         }
     }
